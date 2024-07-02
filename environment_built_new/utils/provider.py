@@ -31,7 +31,7 @@ class Provider:
             )
         else:
             message = f"Provider '{self.provider}' is not supported."
-            print(message)
+            # print(message)
             exit()
         return client
     
@@ -63,7 +63,7 @@ class Provider:
             except Exception as e:
                 message = f"[{self.agent_name}] Attempt #{query_attempts} failed - Error querying the model '{self.model}' from provider '{self.provider}': {e}"
                 # self.logger.warning(message) if self.logger else print(message)
-                print(message)
+                # print(message)
                 continue
 
         return response

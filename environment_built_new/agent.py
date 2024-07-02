@@ -95,7 +95,7 @@ class Agent():
         self.memory['llm_actions'].append(json.dumps(self.llm_actions))
         # print(self.llm_actions)
 
-        return self.llm_actions['decision']['action'], self.llm_actions['decision_con']['action'], self.llm_actions['decision_tar']['action']
+        return self.llm_actions['decision']['action'], self.llm_actions['decision_con']['action'], self.llm_actions['decision_dis']['action']
 
     # def update_actions(self):
     #     # Update actions first as they may be used in variable update rules
