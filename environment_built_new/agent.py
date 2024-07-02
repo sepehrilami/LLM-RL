@@ -26,13 +26,19 @@ class Agent():
             'llm_actions': []
         }
             
-    def step(self, observation):
+    def step(self, observation, your_index, connection_status, others_last_action_list):
         # Generate prompts
         # print(self.variables['history_you'])
-        self.variables['history_you']['value'] = observation[0]
-        self.variables['history_other']['value'] = observation[1]
 
-        merged_data = merge_dicts(self.variables, self.actions)
+        # self.variables['history_you']['value'] = observation[0]
+        # self.variables['history_other']['value'] = observation[1]
+        # self.variables['your_index']['value'] = your_index
+        # self.variables['connection_status']['value'] = connection_status
+        # self.variables['others_last_action_list']['value'] = others_last_action_list
+
+
+        # merged_data = merge_dicts(self.variables, self.actions)
+
         # self.system_prompt = self.expression_evaluator.evaluate(
         #     expression=self.system_prompt_template,
         #     data=merged_data,
@@ -48,15 +54,26 @@ class Agent():
         #     literal=True
         # )
 
+        self.variables['history_you']['value'] = observation[0]
+        self.variables['history_other']['value'] = observation[1]
+        self.variables['your_index']['value'] = your_index
+        self.variables['connection_status']['value'] = connection_status
+        self.variables['others_last_action_list']['value'] = others_last_action_list
+
         multiple_input_prompt = PromptTemplate(
-            input_variables=['history_you', 'history_other'],
+            input_variables=['history_you', 'history_other', 'your_index',
+                             'connection_status', 'others_last_action_list'],
             template=self.prompt_template
         )
 
         # print(self.variables['history_you']['value'])
         self.system_prompt = self.system_prompt_template
-        self.prompt = multiple_input_prompt.format(history_you=str(self.variables['history_you']['value']),
-                                                   history_other=str(self.variables['history_other']['value']))
+        self.prompt = multiple_input_prompt.format(history_you=str(observation[0]),
+                                                   history_other=str(observation[1]),
+                                                   your_index=your_index,
+                                                   connection_status=connection_status,
+                                                   others_last_action_list=others_last_action_list
+                                                   )
         # print(self.prompt)
         # Update memory
         self.memory['system_prompt'] = self.system_prompt
@@ -78,7 +95,7 @@ class Agent():
         self.memory['llm_actions'].append(json.dumps(self.llm_actions))
         # print(self.llm_actions)
 
-        return self.llm_actions['decision']['action'], self.llm_actions['decision']['reasoning']
+        return self.llm_actions['decision']['action'], self.llm_actions['decision_con']['action'], self.llm_actions['decision_tar']['action']
 
     # def update_actions(self):
     #     # Update actions first as they may be used in variable update rules

@@ -34,6 +34,8 @@ class Orbit():
         self.api_key = self.orbit_settings['api_key']
 
         # Setup seed for randomness
+        self.seed = np.random.randint(1000)
+        # print(self.seed)
         random.seed(self.seed)        
         np.random.seed(self.seed)
 
@@ -48,20 +50,22 @@ class Orbit():
         # self.initialize_agents()
         # self.logger.info(f"Agents initialized.")
 
-    def env_step(self, agents, your_index, opponent_index, observation):
+    def env_step(self, agents, your_index, opponent_index, observation, connection_status, others_last_action_list):
         # orbit.orbit_step += 1
 
-        actions_temp, reasoning_temp = agents[your_index].step(observation[your_index, opponent_index])
+        actions_temp, action_con, action_tar = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
+
 
         if actions_temp == 'defection':
-            actions_temp = 0
+            actions_cal = 0
         elif actions_temp == 'cooperation':
-            actions_temp = 1
+            actions_cal = 1
         else:
             print("error")
             exit()
 
-        return actions_temp, reasoning_temp
+
+        return actions_cal, action_con, action_tar
 
 class agent_individual():
     def __init__(self, orbit, agent_name, family_setting, memory_length):
