@@ -1,4 +1,5 @@
 import json
+import time
 
 import matplotlib.pyplot as plt
 
@@ -36,14 +37,28 @@ they are playing PD with others with connections, llm agents will base on the la
 actions to make decisions in the current round. 
 '''
 
-# print(llm_agents)
 
+initial_time = time.time()
+# outer loop for rounds
+def save_graph(g, pos, step):
+    plt.clf()
+    fig = plt.figure()
+    # pos = nx.kamada_kawai_layout(g)
+
+    nx.draw_networkx(g, pos, ax=fig.add_subplot())
+    fig.savefig(f'figure/step_{step}.png')
+    return fig
+
+fig = save_graph(g, pos, step=-1)
 for step in range(game_length):
+    # inner loop for agents
     for i in range(len(llm_agents)):
         llm_agents[i].orbit.orbit_step += 1
         neighbor_index = list(g.neighbors(i))
         adj_matrix = nx.adjacency_matrix(g).todense()
         # print(neighbor_index)
+        
+        # inner loop for neighbors of the agent
         for j in range(len(neighbor_index)):
             # print(neighbor_index[j])
             action_ij, action_con, action_dis = orbit.env_step(llm_agents, i, neighbor_index[j], observation_list, adj_matrix[i], observation_list[i])
@@ -51,17 +66,18 @@ for step in range(game_length):
 
             observation_list[i, neighbor_index[j], 0] = action_ij
             # observation_list[i, neighbor_index[j], 1] = action_ji
+            print(f'Round {step}, agent {i} vs agent {neighbor_index[j]}, action: {action_ij}, connection: {action_con}, disconnection: {action_dis}')
 
-            change_network(g, i, action_con, action_dis)
-            print('Round ', step, ' you are agent ', i, 'opponent is agent ', neighbor_index[j],
-                  'your action is: ', action_ij, 'your connection action is to ', action_con,
-                  'your dis-connection action is to ', action_dis)
+        change_network(g, i, action_con, action_dis)
+            # print('Round ', step, ' you are agent ', i, 'opponent is agent ', neighbor_index[j],
+            #       'your action is: ', action_ij, 'your connection action is to ', action_con,
+            #       'your dis-connection action is to ', action_dis)
             # nx.draw_networkx(g, pos=nx.spring_layout(g))
-            plt.clf()
-            fig = plt.figure()
-            # pos = nx.kamada_kawai_layout(g)
-
-            nx.draw_networkx(g, pos, ax=fig.add_subplot())
-            fig.savefig('figure/step_' + str(step) + '_' + str(i) + '_'+ str(neighbor_index[j])+ '.png')
-            plt.close(fig)
+        # print(f'Inner loop time: {time.time() - initial_time}')
+    # print(f'Outer loop time: {time.time() - initial_time}')
+    
+    fig = save_graph(g, pos, step)
+    
+plt.close(fig)
+print(f'Total time: {round(time.time() - initial_time, 2)}')
             # plt.show()
