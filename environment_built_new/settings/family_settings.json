@@ -1,9 +1,18 @@
 
     {
         "memory_length": 0,
-        "system_prompt_template": "You are playing prisoner's dilemma with others. Try to maximize your rewards in the long term but randomly choose defection sometimes.",
-        "prompt_template": "Here is history of your last action {history_you} and others' last action {history_other} (0 means defection, 1 means cooperation).",
+        "system_prompt_template": "You are playing prisoner's dilemma with others in a network structure, the utility function is [cooperation, cooperation] = [1, 1], [cooperation, defection] = [-2, 3], [defection, cooperation] = [3, -2], [defection, defection]=[-2, -2]. Try to maximize your rewards in the long term but randomly choose defection sometimes. You first need to decide if you want to play cooperation or defection in this round. Another action you need to make is to change the connection status with others. You will first select agents you want to connect and disconnect. You can only choose one agent to connect, and one agent to disconnect",
+        "prompt_template": "Here is history of your last action {history_you} and others' last action {history_other} (0 means defection, 1 means cooperation, -1 means no history). You are agent {your_index}(the index starts with 0), you current connection status list with others is {connection_status}(0 means no connection, 1 means connection), the list of history action with all other agents is {others_last_action_list}(0 means defection, 1 means cooperation, -1 means no connection, note it will be always [-1,-1] in your own index)",
         "variables": [
+            {
+                "variable_name": "your_index",
+                "distribution": "constant",
+                "args": {
+                    "value": 0
+                },
+                "update_rule": null
+            },
+
             {
                 "variable_name": "history_you",
                 "distribution": "constant",
@@ -20,15 +29,48 @@
                     "value": 0
                 },
                 "update_rule": null
+            },
+
+            {
+                "variable_name": "connection_status",
+                "distribution": "constant",
+                "args": {
+                    "value": 0
+                },
+                "update_rule": null
+            },
+
+            {
+                "variable_name": "others_last_action_list",
+                "distribution": "constant",
+                "args": {
+                    "value": 0
+                },
+                "update_rule": null
             }
         ],
 
         "actions": [
+
             {
                 "action_name": "decision",
-                "action_description": "cooperation or defection",
+                "action_description": "choose your decision in current round",
                 "action_type": "option",
-                "options": ["defection", "cooperation"]
+                "options": ["0", "1"]
+            },
+
+            {
+                "action_name": "decision_con",
+                "action_description": "choose agents index to connect, choose -1 means keep the same without connecting to new agents",
+                "action_type": "option",
+                "options": ["-1","0", "1", "2", "3", "4"]
+            },
+            {
+                "action_name": "decision_dis",
+                "action_description": "choose agents index to disconnect, choose -1 means keep the same without connecting to new agents",
+                "action_type": "option",
+                "options": ["-1", "0", "1", "2", "3", "4"]
             }
+
         ]
     }

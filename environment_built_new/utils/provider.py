@@ -31,7 +31,7 @@ class Provider:
             )
         else:
             message = f"Provider '{self.provider}' is not supported."
-            print(message)
+            # print(message)
             exit()
         return client
     
@@ -44,7 +44,11 @@ class Provider:
 
         messages = self.get_messages()
         # print(messages)
-        response = self.query_logic(messages)
+        # response = self.query_logic(messages)
+        response = self.client.invoke(messages)
+        # print(response)
+
+        response = json.loads(response.content)
         # print(response)
         return response
     
@@ -55,39 +59,44 @@ class Provider:
             try:
                 response = self.client.invoke(messages)
                 response = json.loads(response.content)
+                # print(1)
             except Exception as e:
                 message = f"[{self.agent_name}] Attempt #{query_attempts} failed - Error querying the model '{self.model}' from provider '{self.provider}': {e}"
                 # self.logger.warning(message) if self.logger else print(message)
-                print(message)
+                # print(message)
                 continue
-
-            for action in self.actions.items():
-                # print(agents.get(self.agent_name))
-
-                allowed_keys = {
-                    action[0]: action[1]['options'] if action[1]['type'] == 'option' else action[1]['type']
-                }
-
-                # print(agents.get(self.agent_name)['type'])
-            # print(allowed_keys)
-            schema = self.generate_schema(allowed_keys)
-            # print(response)
-            # print(schema)
-            if not self.validate_dict(response, schema):
-                message = f"[{self.agent_name}] Attempt #{query_attempts} failed - The response is not in the correct format: {response}"
-                # self.logger.warning(message) if self.logger else print(message)
-                print(message)
-
-                continue
-            else:
-                return response
-
-        message = f"[{self.agent_name}] Error querying the model '{self.model}' from provider '{self.provider}'. Max attempts exceeded."
-        # self.logger.error(message) if self.logger else print(message);
-        print(message)
-        exit()
 
         return response
+        #     print(response)
+        #
+        #
+        #     for action in self.actions.items():
+        #         # print(agents.get(self.agent_name))
+        #         # print(action)
+        #         allowed_keys = {
+        #             action[0]: action[1]['options'] if action[1]['type'] == 'option' else action[1]['type']
+        #         }
+        #
+        #         # print(agents.get(self.agent_name)['type'])
+        #     # print(allowed_keys)
+        #     schema = self.generate_schema(allowed_keys)
+        #     # print(response)
+        #     # print(schema)
+        #     if not self.validate_dict(response, schema):
+        #         message = f"[{self.agent_name}] Attempt #{query_attempts} failed - The response is not in the correct format: {response}"
+        #         # self.logger.warning(message) if self.logger else print(message)
+        #         # print(message)
+        #
+        #         continue
+        #     else:
+        #         return response
+        #
+        # message = f"[{self.agent_name}] Error querying the model '{self.model}' from provider '{self.provider}'. Max attempts exceeded."
+        # # self.logger.error(message) if self.logger else print(message);
+        # print(message)
+        # exit()
+
+        # return response
 
     def validate_dict(self, data, schema):
         try:
@@ -160,8 +169,10 @@ class Provider:
                 format_instructions += f"\t\t\"action\": string // {agent_data['description']}\n"
             elif agent_data['type'] == 'option':
                 options = ', '.join(agent_data['options'])
+                # options = agent_data['options']
+                # print(options)
                 format_instructions += f"\t\"{action[0]}\": {{\n"
-                format_instructions += "\t\t\"reasoning\": string // the reasoning behind the chosen option\n"
+                # format_instructions += "\t\t\"reasoning\": string // the reasoning behind the chosen option\n"
                 format_instructions += f"\t\t\"action\": option // select one option from the following options [{options}]\n"
             elif agent_data['type'] == 'float':
                 format_instructions += f"\t\"{action[0]}\": {{\n"

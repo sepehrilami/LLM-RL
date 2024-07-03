@@ -10,6 +10,23 @@ from utils.data_handler import DataHandler
 from utils.logger import Logger
 
 
+def change_network(g, agent_index, action_con, action_dis):
+    action_con = int(action_con)
+    action_con = int(action_dis)
+
+    if action_con == -1:
+        pass
+    else:
+        g.add_edge(agent_index, int(action_con))
+
+    if action_dis == -1:
+        pass
+    else:
+        try:
+            g.remove_edge(agent_index, int(action_dis))
+        except:
+            pass
+
 class Orbit():
     def __init__(self, orbit_settings, output_path='output'):
         self.output_path = output_path
@@ -34,6 +51,8 @@ class Orbit():
         self.api_key = self.orbit_settings['api_key']
 
         # Setup seed for randomness
+        self.seed = np.random.randint(1000)
+        # print(self.seed)
         random.seed(self.seed)        
         np.random.seed(self.seed)
 
@@ -48,20 +67,23 @@ class Orbit():
         # self.initialize_agents()
         # self.logger.info(f"Agents initialized.")
 
-    def env_step(self, agents, your_index, opponent_index, observation):
+    def env_step(self, agents, your_index, opponent_index, observation, connection_status, others_last_action_list):
         # orbit.orbit_step += 1
 
-        actions_temp, reasoning_temp = agents[your_index].step(observation[your_index, opponent_index])
+        actions_temp, action_con, action_tar = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
 
-        if actions_temp == 'defection':
-            actions_temp = 0
-        elif actions_temp == 'cooperation':
-            actions_temp = 1
-        else:
-            print("error")
-            exit()
+        # print(actions_temp)
+        #
+        # if actions_temp == 'defection':
+        #     actions_cal = 0
+        # elif actions_temp == 'cooperation':
+        #     actions_cal = 1
+        # else:
+        #     print("error")
+        #     exit()
 
-        return actions_temp, reasoning_temp
+
+        return actions_temp, action_con, action_tar
 
 class agent_individual():
     def __init__(self, orbit, agent_name, family_setting, memory_length):
