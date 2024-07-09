@@ -14,7 +14,7 @@ device = cuda.get_current_device()
 
 start_time = datetime.now()
 num_agent = 5
-game_length = 3
+game_length = 5
 
 
 # Load settings
@@ -77,6 +77,8 @@ for step in range(game_length):
             while flag:
                 try:
                     action_ij, action_con, action_dis = orbit.env_step(llm_agents, i, neighbor_index[j], observation_list, adj_matrix[i], observation_list[i])
+                    # action_ji, _, _ = orbit.env_step(llm_agents, neighbor_index[j], i, observation_list, adj_matrix[neighbor_index[j]], observation_list[neighbor_index[j]])
+
                     flag = False
                 except:
                     time_try += 1
@@ -85,10 +87,16 @@ for step in range(game_length):
                         print(f'exceed the maximum of trials, break the loop')
                         break
             # action_ji, _, _ = orbit.env_step(llm_agents, neighbor_index[j], i, observation_list, adj_matrix[neighbor_index[j]], observation_list[neighbor_index[j]])
+            history_you = observation_list[i, neighbor_index[j], 0]
+            history_other = observation_list[i, neighbor_index[j], 1]
 
             observation_list[i, neighbor_index[j], 0] = action_ij
+            observation_list[neighbor_index[j], i, 1] = action_ij
+
             # observation_list[i, neighbor_index[j], 1] = action_ji
-            print(f'Round {step}, agent {i} vs agent {neighbor_index[j]}, action: {action_ij}, connection: {action_con}, disconnection: {action_dis}')
+
+            # observation_list[i, neighbor_index[j], 1] = action_ji
+            print(f'Round {step}, agent {i} vs agent {neighbor_index[j]}, history of you and others: {history_you} : {history_other} action: {action_ij}, connection: {action_con}, disconnection: {action_dis}')
 
         change_network(g, i, action_con, action_dis)
     

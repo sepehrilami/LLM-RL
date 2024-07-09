@@ -75,6 +75,9 @@ class Provider:
 
         response = json.loads(response.content)
         # print(response)
+
+        # print(response['reasoning'])
+        # print(response['decision']['reasoning'])
         return response
 
     def get_messages(self):
@@ -95,21 +98,21 @@ class Provider:
         return messages
         
     def get_format_instructions(self):
-        format_instructions = "The response should have the following JSON format:\n{\n"
+        format_instructions = "The response should have the following JSON format in a dictionary:\n{\n"
 
         for action in self.actions.items():
             agent_data = action[1]
             if agent_data['type'] == 'text':
                 format_instructions += f'\t\"{action[0]}\": {{\n'
-                format_instructions += "\t\t\"reasoning\": string // the reasoning behind the action\n"
-                format_instructions += f"\t\t\"action\": string // {agent_data['description']}\n"
+                # format_instructions += "\t\t\"reasoning\": string // the reasoning behind the action\n"
+                # format_instructions += f"\t\t\"action\": string // {agent_data['description']}\n"
             elif agent_data['type'] == 'option':
                 options = ', '.join(agent_data['options'])
                 # options = agent_data['options']
                 # print(options)
                 format_instructions += f"\t\"{action[0]}\": {{\n"
-                # format_instructions += "\t\t\"reasoning\": string // the reasoning behind the chosen option\n"
-                format_instructions += f"\t\t\"action\": option // select one option from the following options [{options}], and output actions in a dictionary\n"
+                format_instructions += "\t\t\"reasoning\": string // the reasoning behind the chosen option\n"
+                format_instructions += f"\t\t\"action\": option // select one option from the following options [{options}]\n"
             elif agent_data['type'] == 'float':
                 format_instructions += f"\t\"{action[0]}\": {{\n"
                 format_instructions += "\t\t\"reasoning\": string // the reasoning behind the action\n"
