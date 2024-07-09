@@ -3,19 +3,15 @@ import json
 from langchain_groq import ChatGroq
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-<<<<<<< HEAD
 import torch
 import torchvision
 import transformers
 # import HuggingFacePipeline
 from torch import cuda, bfloat16, LongTensor, FloatTensor
-=======
-from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+from langchain_huggingface import HuggingFacePipeline
 import transformers
 from torch import bfloat16
 
-
->>>>>>> af1c322d669079624ca4b59bb8251dd3d9783b41
 
 class Provider:
     def __init__(self, provider, model, temperature, api_key=None, max_query_attempts=20):
@@ -48,18 +44,21 @@ class Provider:
                                                          bnb_4bit_compute_dtype=bfloat16)
             model_config = transformers.AutoConfig.from_pretrained(self.model,token=self.api_key)
             tokenizer = transformers.AutoTokenizer.from_pretrained(self.model, token=self.api_key)
-            alg = transformers.AutoModelForCausalLM.from_pretrained(self.model, 
-                                                                    cache_dir='/scratch/lora.n/AAAI', 
+            torch.cuda.empty_cache()
+            alg = transformers.AutoModelForCausalLM.from_pretrained(self.model,
                                                                     trust_remote_code=True,
                                                                     config=model_config,
                                                                     quantization_config=bnb_config,
-                                                                    device_map='auto', token=self.api_key)
-            pipe = transformers.pipeline(model=alg, tokenizer=tokenizer, torch_dtype=bfloat16, return_full_text=True, task='text-generation', temperature=self.temperature, max_new_tokens=self.max_new_tokens, repetition_penalty=1.1, pad_token_id=self.tokenizer.eos_token_id)              
-            client = HuggingFacePipeline(pipeline = pipe,
-                                         model_kwargs = {"response_format": {"type": "json_object"}})
+                                                                    device_map='cuda:0', token=self.api_key)
+            self.pipe = transformers.pipeline(model=alg, tokenizer=tokenizer, torch_dtype=bfloat16, return_full_text=True,
+                                              task='text-generation', temperature=self.temperature, repetition_penalty=1.1,
+                                              pad_token_id=tokenizer.eos_token_id, batch_size=8)
+            self.pipe.call_count = 0
+            client = HuggingFacePipeline(pipeline=self.pipe,
+                                         model_kwargs={"response_format": {"type": "json_object"}})
         else:
             message = f"Provider '{self.provider}' is not supported."
-            # print(message)
+            print(message)
             exit()
         return client
     
@@ -73,7 +72,6 @@ class Provider:
         messages = self.get_messages()
         # print(messages)
         response = self.client.invoke(messages)
-        # print(response)
 
         response = json.loads(response.content)
         # print(response)
@@ -111,7 +109,7 @@ class Provider:
                 # print(options)
                 format_instructions += f"\t\"{action[0]}\": {{\n"
                 # format_instructions += "\t\t\"reasoning\": string // the reasoning behind the chosen option\n"
-                format_instructions += f"\t\t\"action\": option // select one option from the following options [{options}]\n"
+                format_instructions += f"\t\t\"action\": option // select one option from the following options [{options}], and output actions in a dictionary\n"
             elif agent_data['type'] == 'float':
                 format_instructions += f"\t\"{action[0]}\": {{\n"
                 format_instructions += "\t\t\"reasoning\": string // the reasoning behind the action\n"

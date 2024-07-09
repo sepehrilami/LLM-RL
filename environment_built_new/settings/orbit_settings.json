@@ -1,8 +1,9 @@
 {
     "seed": 0,
     "step_unit": "day",
-    "provider": "hf",
-    "model": "meta-llama/Meta-Llama-3-70B",
+    "provider": "ollama",
+    "model": "llama3:8b",
     "temperature": 0.8,
-    "api_key": "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"
+    "api_key": null
+
 }
