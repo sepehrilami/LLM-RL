@@ -4,6 +4,11 @@ from jsonschema import validate
 from langchain_groq import ChatGroq
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+import torch
+import torchvision
+import transformers
+# import HuggingFacePipeline
+from torch import cuda, bfloat16, LongTensor, FloatTensor
 
 class Provider:
     def __init__(self, provider, model, temperature, api_key=None, max_query_attempts=20):
@@ -29,6 +34,22 @@ class Provider:
                 temperature=self.temperature,
                 format="json"
             )
+        elif self.provider == 'hf':
+            bnb_config = transformers.BitsAndBytesConfig(load_in_4bit=True,
+                                                         bnb_4bit_quant_type='nf4',
+                                                         bnb_4bit_use_double_quant=True, 
+                                                         bnb_4bit_compute_dtype=bfloat16)
+            model_config = transformers.AutoConfig.from_pretrained(self.model,token=self.api_key)
+            tokenizer = transformers.AutoTokenizer.from_pretrained(self.model, token=self.api_key)
+            alg = transformers.AutoModelForCausalLM.from_pretrained(self.model, 
+                                                                    cache_dir='/scratch/lora.n/AAAI', 
+                                                                    trust_remote_code=True,
+                                                                    config=model_config,
+                                                                    quantization_config=bnb_config,
+                                                                    device_map='auto', token=self.api_key)
+            pipe = transformers.pipeline(model=alg, tokenizer=tokenizer, torch_dtype=bfloat16, return_full_text=True, task='text-generation', temperature=self.temperature, max_new_tokens=self.max_new_tokens, repetition_penalty=1.1, pad_token_id=self.tokenizer.eos_token_id)              
+            client = HuggingFacePipeline(pipeline = pipe,
+                                         model_kwargs = {"response_format": {"type": "json_object"}})
         else:
             message = f"Provider '{self.provider}' is not supported."
             # print(message)
