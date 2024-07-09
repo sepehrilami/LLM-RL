@@ -1,9 +1,13 @@
 import json
-from jsonschema import validate
 
 from langchain_groq import ChatGroq
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+import transformers
+from torch import bfloat16
+
+
 
 class Provider:
     def __init__(self, provider, model, temperature, api_key=None, max_query_attempts=20):
@@ -29,6 +33,27 @@ class Provider:
                 temperature=self.temperature,
                 format="json"
             )
+
+        elif self.provider == 'hf':
+            bnb_config = transformers.BitsAndBytesConfig(load_in_4bit=True,
+                                                         bnb_4bit_quant_type='nf4',
+                                                         bnb_4bit_use_double_quant=True,
+                                                         bnb_4bit_compute_dtype=bfloat16)
+            model_config = transformers.AutoConfig.from_pretrained(self.model,token=self.api_key)
+            tokenizer = transformers.AutoTokenizer.from_pretrained(self.model, token=self.api_key)
+            alg = transformers.AutoModelForCausalLM.from_pretrained(self.model,
+                                                                    cache_dir='/scratch/lora.n/AAAI',
+                                                                    trust_remote_code=True,
+                                                                    config=model_config,
+                                                                    quantization_config=bnb_config,
+                                                                    device_map='auto', token=self.api.key)
+            pipe = transformers.pipeline(model=alg, tokenizer=tokenizer, torch_dtype=torch.bfloat16, return_full_text=True,
+                                         task='text-generation', temperature=self.temperature,
+                                         max_new_tokens=self.max_new_tokens, repetition_penalty=1.1,
+                                         pad_token_id=self.tokenizer.eos_token_id)
+            client = HuggingFacePipeline(pipeline = pipe,
+                                         model_kwargs = {"response_format": {"type": "json_object"}})
+
         else:
             message = f"Provider '{self.provider}' is not supported."
             # print(message)
@@ -44,102 +69,12 @@ class Provider:
 
         messages = self.get_messages()
         # print(messages)
-        # response = self.query_logic(messages)
         response = self.client.invoke(messages)
         # print(response)
 
         response = json.loads(response.content)
         # print(response)
         return response
-    
-    def query_logic(self, messages):
-        query_attempts = 0
-        while query_attempts <= self.max_query_attempts:
-            query_attempts += 1
-            try:
-                response = self.client.invoke(messages)
-                response = json.loads(response.content)
-                # print(1)
-            except Exception as e:
-                message = f"[{self.agent_name}] Attempt #{query_attempts} failed - Error querying the model '{self.model}' from provider '{self.provider}': {e}"
-                # self.logger.warning(message) if self.logger else print(message)
-                # print(message)
-                continue
-
-        return response
-        #     print(response)
-        #
-        #
-        #     for action in self.actions.items():
-        #         # print(agents.get(self.agent_name))
-        #         # print(action)
-        #         allowed_keys = {
-        #             action[0]: action[1]['options'] if action[1]['type'] == 'option' else action[1]['type']
-        #         }
-        #
-        #         # print(agents.get(self.agent_name)['type'])
-        #     # print(allowed_keys)
-        #     schema = self.generate_schema(allowed_keys)
-        #     # print(response)
-        #     # print(schema)
-        #     if not self.validate_dict(response, schema):
-        #         message = f"[{self.agent_name}] Attempt #{query_attempts} failed - The response is not in the correct format: {response}"
-        #         # self.logger.warning(message) if self.logger else print(message)
-        #         # print(message)
-        #
-        #         continue
-        #     else:
-        #         return response
-        #
-        # message = f"[{self.agent_name}] Error querying the model '{self.model}' from provider '{self.provider}'. Max attempts exceeded."
-        # # self.logger.error(message) if self.logger else print(message);
-        # print(message)
-        # exit()
-
-        # return response
-
-    def validate_dict(self, data, schema):
-        try:
-            validate(instance=data, schema=schema)
-            return True
-        except:
-            return False
-    
-    def generate_schema(self, allowed_keys):
-        properties = {}
-        for key, action_type in allowed_keys.items():
-            # print(action_type)
-            if isinstance(action_type, list):
-                type_def = {"type": "string", "enum": action_type}
-            elif action_type == "integer":
-                type_def = {"type": "integer"}
-            elif action_type == "list_action":
-                type_def = {"type": "list"}
-            elif action_type == "string":
-                type_def = {"type": "string"}
-            elif action_type == "float":
-                type_def = {"type": "number"}
-            elif action_type == "number":
-                type_def = {"type": "number"}
-            else:
-                type_def = {"type": "null"}  # Default case if an unrecognized type is provided
-
-            properties[key] = {
-                "type": "object",
-                "properties": {
-                    "action": type_def,
-                    "reasoning": {"type": "string"}
-                },
-                "required": ["action", "reasoning"],
-                "additionalProperties": False
-            }
-        
-        schema = {
-            "type": "object",
-            "properties": properties,
-            "additionalProperties": False
-        }
-        return schema
 
     def get_messages(self):
         format_instructions = self.get_format_instructions()

@@ -59,6 +59,9 @@ for step in range(game_length):
         # print(neighbor_index)
         
         # inner loop for neighbors of the agent
+        action_con = -1
+        action_dis = -1
+
         for j in range(len(neighbor_index)):
             # print(neighbor_index[j])
             action_ij, action_con, action_dis = orbit.env_step(llm_agents, i, neighbor_index[j], observation_list, adj_matrix[i], observation_list[i])

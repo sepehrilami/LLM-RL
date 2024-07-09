@@ -6,13 +6,11 @@ import numpy as np
 from agent import Agent
 from utils.utils import *
 from utils.provider import Provider
-from utils.data_handler import DataHandler
-from utils.logger import Logger
 
 
 def change_network(g, agent_index, action_con, action_dis):
     action_con = int(action_con)
-    action_con = int(action_dis)
+    action_dis = int(action_dis)
 
     if action_con == -1:
         pass
@@ -37,8 +35,6 @@ class Orbit():
         os.makedirs(self.output_path)
         
         # Initialize logger and data handler
-        self.logger = Logger(path=self.output_path)
-        # self.data_handler = DataHandler(path=self.output_path)
 
         self.orbit_settings = orbit_settings
         self.orbit_step = 0
@@ -72,16 +68,6 @@ class Orbit():
 
         actions_temp, action_con, action_tar = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
 
-        # print(actions_temp)
-        #
-        # if actions_temp == 'defection':
-        #     actions_cal = 0
-        # elif actions_temp == 'cooperation':
-        #     actions_cal = 1
-        # else:
-        #     print("error")
-        #     exit()
-
 
         return actions_temp, action_con, action_tar
 
@@ -108,8 +94,7 @@ class agent_individual():
                     }
                 for variable_data in self.family_setting['variables']
             }
-        # print(self.variables)
-        
+
         # Initialize actions
         self.actions = {
                 action_data['action_name']:
@@ -123,93 +108,14 @@ class agent_individual():
                 for action_data in self.family_setting['actions']
             }
 
-        # print(self.family_setting)
-
         # Initialize agents
         self.agent = Agent(
                 orbit=self.orbit,
                 agent_name=self.agent_name,
-                variables = self.variables,
-                actions = self.actions,
+                variables=self.variables,
+                actions=self.actions,
                 system_prompt_template=self.family_setting['system_prompt_template'],
                 prompt_template=self.family_setting['prompt_template'],
                 memory_length=self.family_setting['memory_length']
             )
         return self.agent
-
-    # def step(self):
-    #     self.orbit_step += 1
-    #     self.logger.info(f"Orbit step {self.orbit_step} started.")
-    #     # np.random.shuffle(self.agents)
-    #     if self.update_type == 'asynchronous':
-    #         for agent in self.agents:
-    #             agent.step()
-    #             self.data_handler.collect(
-    #                 orbit_step=self.orbit_step,
-    #                 variables=self.variables,
-    #                 actions=self.actions,
-    #                 family_name=agent.family_name,
-    #                 agent_name=agent.agent_name,
-    #                 llm_actions=agent.llm_actions
-    #             )
-    #             self.logger.agent_step(
-    #                 orbit_step=self.orbit_step,
-    #                 family_name=agent.family_name,
-    #                 agent_name=agent.agent_name,
-    #                 system_prompt=agent.system_prompt,
-    #                 prompt=agent.prompt,
-    #                 llm_actions=agent.llm_actions
-    #             )
-    #             agent.update_actions()
-    #             agent.update_variables()
-    #
-    #     elif self.update_type == 'synchronous':
-    #         for agent in self.agents:
-    #             agent.step()
-    #             self.data_handler.collect(
-    #                 orbit_step=self.orbit_step,
-    #                 variables=self.variables,
-    #                 actions=self.actions,
-    #                 family_name=agent.family_name,
-    #                 agent_name=agent.agent_name,
-    #                 llm_actions=agent.llm_actions
-    #             )
-    #             self.logger.agent_step(
-    #                 orbit_step=self.orbit_step,
-    #                 family_name=agent.family_name,
-    #                 agent_name=agent.agent_name,
-    #                 system_prompt=agent.system_prompt,
-    #                 prompt=agent.prompt,
-    #                 llm_actions=agent.llm_actions
-    #             )
-    #         for agent in self.agents:
-    #             agent.update_actions()
-    #         for agent in self.agents:
-    #             agent.update_variables()
-
-
-
-
-
-
-            # orbit.data_handler.collect(
-            #     orbit_step=orbit.orbit_step,
-            #     variables=orbit.variables,
-            #     actions=orbit.actions,
-            #     family_name=agents[i].family_name,
-            #     agent_name=agents[i].agent_name,
-            #     llm_actions=agents[i].llm_actions
-            # )
-            # orbit.logger.agent_step(
-            #     orbit_step=orbit.orbit_step,
-            #     family_name=agents[i].family_name,
-            #     agent_name=agents[i].agent_name,
-            #     system_prompt=agents[i].system_prompt,
-            #     prompt=agents[i].prompt,
-            #     llm_actions=agents[i].llm_actions
-            # )
-        # for agent in agents:
-        #     agent.update_actions()
-        # for agent in agents:
-        #     agent.update_variables()
-
