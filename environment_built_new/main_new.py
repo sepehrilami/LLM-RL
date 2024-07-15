@@ -13,7 +13,7 @@ import numpy as np
 
 
 start_time = datetime.now()
-num_agent = 5
+num_agent = 10
 game_length = 1
 
 
@@ -29,7 +29,7 @@ observation_list = -np.ones((len(llm_agents), len(llm_agents), 2))
 agent_index = np.arange(5)
 
 # g = nx.complete_graph(n=len(llm_agents))
-g = nx.erdos_renyi_graph(n=len(llm_agents), p=0.5, directed=True)
+g = nx.erdos_renyi_graph(n=len(llm_agents), p=1, directed=False)
 
 pos = nx.kamada_kawai_layout(g)
 
@@ -62,9 +62,21 @@ def convert_str_to_int(action):
     else:
         print(f'Invalid action: {action}')
         return -1
+    
+def stat_analysis(all_actuons):
+    # this list is a list of C and D actions.
+    # count them and print the ration of C and D.
+    np_actions = np.array(all_actions)
+    print(f'Total actions: {len(all_actions)}')
+    print(f'Total C: {np.sum(np_actions == 'C')}')
+    print(f'Total D: {np.sum(np_actions == 'D')}') 
+    print(f'Ratio of C: %{round(np.sum(np_actions == "C") / len(all_actions), 2) * 100}')
+    print(f'Ratio of D: %{round(np.sum(np_actions == "D") / len(all_actions), 2) * 100}')
+    print("--------------------")
 
 fig = save_graph(g, pos, step=-1)
 for step in range(game_length):
+    all_actions = []
     # inner loop for agents
     for i in range(len(llm_agents)):
         llm_agents[i].orbit.orbit_step += 1
@@ -84,7 +96,7 @@ for step in range(game_length):
             time_try = 0
 
             action_ij = orbit.env_step(llm_agents, i, neighbor_index[j], observation_list, adj_matrix[i], observation_list[i])
-            
+            all_actions.append(action_ij)
             # while flag:
                 
             #     try:
@@ -102,13 +114,14 @@ for step in range(game_length):
 
             observation_list[i, neighbor_index[j], 0] = convert_str_to_int(action_ij)
             # observation_list[i, neighbor_index[j], 1] = action_ji
-            print(f'Round {step}, agent {i} vs agent {neighbor_index[j]}, action: {action_ij}')
+            # print(f'Round {step}, agent {i} vs agent {neighbor_index[j]}, action: {action_ij}')
 
         # change_network(g, i, action_con, action_dis)
     
-    fig = save_graph(g, pos, step)
+    # fig = save_graph(g, pos, step)
+    stat_analysis(all_actions)
     
-plt.close(fig)
+# plt.close(fig)
 print(f'Total time: {round(time.time() - initial_time, 2)}')
 
 # plt.show()

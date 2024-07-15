@@ -66,7 +66,7 @@ class Orbit():
         # orbit.orbit_step += 1
 
         # actions_temp, action_con, action_tar = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
-        actions_temp = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
+        actions_temp = agents[your_index].step(observation[your_index, opponent_index], your_index, opponent_index, connection_status, others_last_action_list)
 
         # return actions_temp, action_con, action_tar
         return actions_temp

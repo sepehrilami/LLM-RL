@@ -74,8 +74,6 @@ class Provider:
         response = self.client.invoke(messages)
         # print(response)
         # response = json.loads(response.content)
-        print(response.content)
-        print("----------------------------------------")
         return response
 
     def get_messages(self):
