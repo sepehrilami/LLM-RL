@@ -47,7 +47,7 @@ class Provider:
                                                                     config=model_config,
                                                                     quantization_config=bnb_config,
                                                                     device_map='auto', token=self.api.key)
-            pipe = transformers.pipeline(model=alg, tokenizer=tokenizer, torch_dtype=torch.bfloat16, return_full_text=True, t
+            pipe = transformers.pipeline(model=alg, tokenizer=tokenizer, torch_dtype=torch.bfloat16, return_full_text=True,
                                          task='text-generation', temperature=self.temperature, 
                                          max_new_tokens=self.max_new_tokens, repetition_penalty=1.1, 
                                          pad_token_id=self.tokenizer.eos_token_id)              
@@ -55,7 +55,6 @@ class Provider:
                                          model_kwargs = {"response_format": {"type": "json_object"}})
         else:
             message = f"Provider '{self.provider}' is not supported."
-            # print(message)
             exit()
         return client
     
@@ -67,14 +66,13 @@ class Provider:
         self.agent_name = agent_name
 
         messages = self.get_messages()
-        # print(messages)
         # response = self.query_logic(messages)
         response = self.client.invoke(messages)
-        # print(response)
+        
 
-        response = json.loads(response.content)
+        # response = json.loads(response.content)
         # print(response)
-        return response
+        return response.content
     
     def query_logic(self, messages):
         query_attempts = 0
@@ -87,7 +85,6 @@ class Provider:
             except Exception as e:
                 message = f"[{self.agent_name}] Attempt #{query_attempts} failed - Error querying the model '{self.model}' from provider '{self.provider}': {e}"
                 # self.logger.warning(message) if self.logger else print(message)
-                # print(message)
                 continue
 
         return response

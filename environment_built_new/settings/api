@@ -14,7 +14,9 @@
     "provider": "hf",
     "model": "meta-llama/Meta-Llama-3-8B",
     "temperature": 0.8,
-    "api_key": "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"
+    "api_key": "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",
+
+    Nunzio's: "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"
 
 [
     {

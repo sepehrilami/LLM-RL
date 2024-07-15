@@ -24,8 +24,6 @@ data = pd.read_csv(file_path)
 
 x_axis = 'orbit_step'  # The default x-axis is 'orbit_step'
 
-# print(data)
-
 plt.figure(figsize=(12, 8))
 
 if agent_name is None:

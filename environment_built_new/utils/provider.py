@@ -8,7 +8,7 @@ import torchvision
 import transformers
 # import HuggingFacePipeline
 from torch import cuda, bfloat16, LongTensor, FloatTensor
-from langchain_huggingface import HuggingFacePipeline
+# from langchain_huggingface import HuggingFacePipeline
 import transformers
 from torch import bfloat16
 
@@ -29,7 +29,8 @@ class Provider:
                 model_name=self.model,
                 temperature=self.temperature, 
                 groq_api_key=self.api_key, 
-                model_kwargs={"response_format": {"type": "json_object"}}
+                # model_kwargs={"response_format": {"type": "json_object"}}
+                model_kwargs={}
             )
         elif self.provider == 'ollama':
             client = ChatOllama(
@@ -57,8 +58,7 @@ class Provider:
             client = HuggingFacePipeline(pipeline=self.pipe,
                                          model_kwargs={"response_format": {"type": "json_object"}})
         else:
-            message = f"Provider '{self.provider}' is not supported."
-            print(message)
+            print(f'Provider {self.provider} is not supported.')
             exit()
         return client
     
@@ -70,32 +70,34 @@ class Provider:
         self.agent_name = agent_name
 
         messages = self.get_messages()
-        # print(messages)
+        
         response = self.client.invoke(messages)
-
-        response = json.loads(response.content)
         # print(response)
+        # response = json.loads(response.content)
+        print(response.content)
+        print("----------------------------------------")
         return response
 
     def get_messages(self):
         format_instructions = self.get_format_instructions()
 
         messages = []
-        for i in range(len(self.memory['prompt'])):
-            messages.append(HumanMessage(content=self.memory['prompt'][i]))
-            if i < len(self.memory['llm_actions']):
-                messages.append(AIMessage(content=self.memory['llm_actions'][i]))
+        # for i in range(len(self.memory['prompt'])):
+        #     messages.append(HumanMessage(content=self.memory['prompt'][i]))
+        #     if i < len(self.memory['llm_actions']):
+        #         messages.append(AIMessage(content=self.memory['llm_actions'][i]))
 
-        if len(messages)/2 > self.memory_length:
-            messages = messages[-2*self.memory_length:]
+        # if len(messages)/2 > self.memory_length:
+        #     messages = messages[-2*self.memory_length:]
 
         messages.insert(0, SystemMessage(content=f"{self.memory['system_prompt']}\n\n{format_instructions}"))
-        messages.append(HumanMessage(content=self.memory['prompt'][-1]))
+        # messages.append(HumanMessage(content=self.memory['prompt'][-1]))
         # print(messages)
         return messages
         
     def get_format_instructions(self):
-        format_instructions = "The response should have the following JSON format:\n{\n"
+        # format_instructions = "The response should have the following JSON format:\n{\n"
+        format_instructions = ""
 
         for action in self.actions.items():
             agent_data = action[1]
@@ -104,6 +106,7 @@ class Provider:
                 format_instructions += "\t\t\"reasoning\": string // the reasoning behind the action\n"
                 format_instructions += f"\t\t\"action\": string // {agent_data['description']}\n"
             elif agent_data['type'] == 'option':
+                continue
                 options = ', '.join(agent_data['options'])
                 # options = agent_data['options']
                 # print(options)
@@ -126,6 +129,5 @@ class Provider:
                 format_instructions += f"\t\"{action[0]}\": {{\n"
                 format_instructions += "\t\t\"reasoning\": string // the reasoning behind the action\n"
                 format_instructions += f"\t\t\"action\": list // {agent_data['description']}\n"
-        format_instructions += "}\n"
-
+        # format_instructions += "}\n"
         return format_instructions

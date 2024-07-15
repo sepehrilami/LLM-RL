@@ -48,7 +48,6 @@ class Orbit():
 
         # Setup seed for randomness
         self.seed = np.random.randint(1000)
-        # print(self.seed)
         random.seed(self.seed)        
         np.random.seed(self.seed)
 
@@ -66,10 +65,11 @@ class Orbit():
     def env_step(self, agents, your_index, opponent_index, observation, connection_status, others_last_action_list):
         # orbit.orbit_step += 1
 
-        actions_temp, action_con, action_tar = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
+        # actions_temp, action_con, action_tar = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
+        actions_temp = agents[your_index].step(observation[your_index, opponent_index], your_index, connection_status, others_last_action_list)
 
-
-        return actions_temp, action_con, action_tar
+        # return actions_temp, action_con, action_tar
+        return actions_temp
 
 class agent_individual():
     def __init__(self, orbit, agent_name, family_setting, memory_length):

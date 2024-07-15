@@ -58,6 +58,9 @@ class Agent():
         )
 
         # Update memory
-        self.memory['llm_actions'].append(json.dumps(self.llm_actions))
+        # self.memory['llm_actions'].append(json.dumps(self.llm_actions))
 
-        return self.llm_actions['decision']['action'], self.llm_actions['decision_con']['action'], self.llm_actions['decision_dis']['action']
+
+        # return self.llm_actions['decision']['action'], self.llm_actions['decision_con']['action'], self.llm_actions['decision_dis']['action']
+        # return self.llm_actions['decision']['action']
+        return self.llm_actions.content
