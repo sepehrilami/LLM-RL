@@ -24,16 +24,17 @@ class Agent():
             'llm_actions': []
         }
             
-    def step(self, observation, your_index, connection_status, others_last_action_list):
+    def step(self, observation, your_index, opponent_index, connection_status, others_last_action_list):
 
         self.variables['history_you']['value'] = observation[0]
         self.variables['history_other']['value'] = observation[1]
         self.variables['your_index']['value'] = your_index
+        self.variables['opponent_index']['value'] = opponent_index
         self.variables['connection_status']['value'] = connection_status
         self.variables['others_last_action_list']['value'] = others_last_action_list
 
         multiple_input_prompt = PromptTemplate(
-            input_variables=['history_you', 'history_other', 'your_index',
+            input_variables=['history_you', 'history_other', 'your_index', 'opponent_index',
                              'connection_status', 'others_last_action_list'],
             template=self.prompt_template
         )
@@ -42,6 +43,7 @@ class Agent():
         self.prompt = multiple_input_prompt.format(history_you=str(observation[0]),
                                                    history_other=str(observation[1]),
                                                    your_index=your_index,
+                                                   opponent_index=opponent_index,
                                                    connection_status=connection_status,
                                                    others_last_action_list=others_last_action_list
                                                    )
