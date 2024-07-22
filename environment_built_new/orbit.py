@@ -47,9 +47,9 @@ class Orbit():
         self.api_key = self.orbit_settings['api_key']
 
         # Setup seed for randomness
-        self.seed = np.random.randint(1000)
-        random.seed(self.seed)        
-        np.random.seed(self.seed)
+        # self.seed = np.random.randint(1000)
+        # random.seed(self.seed)
+        # np.random.seed(self.seed)
 
         # Initialize provider
         self.provider = Provider(

@@ -68,8 +68,8 @@ def stat_analysis(all_actuons):
     # count them and print the ration of C and D.
     np_actions = np.array(all_actions)
     print(f'Total actions: {len(all_actions)}')
-    print(f'Total C: {np.sum(np_actions == 'C')}')
-    print(f'Total D: {np.sum(np_actions == 'D')}') 
+    print(f'Total C: {np.sum(np_actions == "C")}')
+    print(f'Total D: {np.sum(np_actions == "D")}')
     print(f'Ratio of C: %{round(np.sum(np_actions == "C") / len(all_actions), 2) * 100}')
     print(f'Ratio of D: %{round(np.sum(np_actions == "D") / len(all_actions), 2) * 100}')
     print("--------------------")
