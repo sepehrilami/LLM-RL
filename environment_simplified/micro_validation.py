@@ -34,7 +34,7 @@ all_actions1 = []
 # freq2 = 'sometimes'
 # print(f'Agent 1: {freq1}, Agent 2: {freq2}')
 print('Start playing...')
-all_keys = ['goal_several_long_run', 'goal_several_long_run_CoT']
+all_keys = ['previous_updated_payoff']
 prompt_list = [prompts_file[key] for key in all_keys]
 for i, prompt_1 in enumerate(prompt_list):
     all_actions1 = []
@@ -49,7 +49,7 @@ for i, prompt_1 in enumerate(prompt_list):
         # action_2 = llm_agent_list[1].answer(prompt_2)
         all_actions1.append(action_1)
         
-        with open(f'results/{filename}.json', 'w') as f:
+        with open(f'micro-val-results/{filename}.json', 'w') as f:
                 json.dump(all_actions1, f)
             
         if step % 10 == 0:            
