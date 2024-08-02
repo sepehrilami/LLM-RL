@@ -34,7 +34,7 @@ all_actions1 = []
 # freq2 = 'sometimes'
 # print(f'Agent 1: {freq1}, Agent 2: {freq2}')
 print('Start playing...')
-all_keys = ['previous_updated_payoff']
+all_keys = ['final_template']
 prompt_list = [prompts_file[key] for key in all_keys]
 for i, prompt_1 in enumerate(prompt_list):
     all_actions1 = []
@@ -53,7 +53,7 @@ for i, prompt_1 in enumerate(prompt_list):
                 json.dump(all_actions1, f)
             
         if step % 10 == 0:            
-            time.sleep(8)
+            time.sleep(5)
     
     # all_actions2.append(action_2)
     stat_analysis(all_actions1)
