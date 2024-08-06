@@ -31,17 +31,17 @@ class LLMAgent():
             
     def answer(self, prompt):
         # Update memory
-        self.memory['prompt'].append(prompt)
+        # self.memory['prompt'].append(prompt)
         # Query llm
         llm_actions = self.provider.query_llm(prompt)
 
-        self.memory['llm_actions'].append(llm_actions.content)
+        # self.memory['llm_actions'].append(llm_actions.content)
 
         return llm_actions.content
 
 
 class A2C_manager():
-    def __init__(self, state_dim, action_dim, actor_lr=0.001, critic_lr=0.005, gamma=0.99):
+    def __init__(self, state_dim, action_dim, actor_lr=0.001, critic_lr=0.005, gamma=0.9):
         self.gamma = gamma
         self.actor_critic = ActorCritic(state_dim, action_dim)
         self.optimizer_actor = optim.Adam(self.actor_critic.actor.parameters(), lr=actor_lr)

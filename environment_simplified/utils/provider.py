@@ -1,3 +1,5 @@
+import time
+
 from langchain_groq import ChatGroq
 from langchain_community.chat_models import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
@@ -29,7 +31,8 @@ class Provider:
             client = ChatOllama(
                 model=self.model,
                 temperature=self.temperature,
-                format="json"
+                format="json",
+                num_gpu=1
             )
         elif self.provider == 'hf':
             bnb_config = transformers.BitsAndBytesConfig(load_in_4bit=True,
@@ -57,11 +60,30 @@ class Provider:
     
     def query_llm(self, prompt):
         format_instructions = ""
-
+        attempt = 0
+        flag = True
         messages = []
         messages.insert(0, SystemMessage(content=f"{prompt}\n\n{format_instructions}"))
         # print(messages)
-        response = self.client.invoke(messages)
+        while flag:
+            flag = False
+            try:
+                response = self.client.invoke(messages)
+                if response.content != "C" and response.content != "D":
+                    # print(response.content)
+                    attempt += 1
+                    flag = True
+                    print(f"attempt: {attempt}, respond nonsense")
+                    time.sleep(5)
+            except:
+                print(f"attempt: {attempt}, groq broke")
+                attempt += 1
+                flag = True
+                time.sleep(5)
+
+            if attempt >= 10:
+                print("attempt more than tolerance, terminate the process")
+                exit()
         # print(response)
         return response
 

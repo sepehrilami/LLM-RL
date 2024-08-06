@@ -17,8 +17,8 @@ def build_prompt(intervention, last_action1, last_action2):
 
 start_time = datetime.now()
 num_agent = 2
-game_length = 50
-training_episode = 10
+game_length = 10
+training_episode = 1000
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
 env_settings = json.load(open('settings/env_settings.json'))
@@ -49,44 +49,49 @@ for episode in range(training_episode):
 
     for step in range(game_length):
         # print(step)
-        # intervention1 = np.random.choice(2)
-        # intervention2 = np.random.choice(2)
         if step == 0:
             prompt_1 = build_prompt(0, last_action1, last_action2)
             prompt_2 = build_prompt(0, last_action2, last_action1)
-            action_1 = llm_agent_list[0].answer(prompt_1)
-            action_2 = llm_agent_list[1].answer(prompt_2)
-            # print(action_1, action_2)
-            observation1 = convert_str_to_int(action_1)
-            observation2 = convert_str_to_int(action_2)
-            all_actions1.append(action_1)
-            all_actions2.append(action_2)
+            action_1_str = llm_agent_list[0].answer(prompt_1)
+            action_2_str = llm_agent_list[1].answer(prompt_2)
+
+            last_action1_str = action_1_str
+            last_action2_str = action_2_str
+            all_actions1.append(action_1_str)
+            all_actions2.append(action_2_str)
+
+            observation1 = convert_str_to_int(last_action1_str)
+            observation2 = convert_str_to_int(last_action2_str)
+
         else:
-            if step == game_length-1:
+            if step == game_length - 1:
                 done = True
+
+            # print(last_action1_str, last_action2_str)
 
             intervention1 = a2c_manager.choose_action([observation1, observation2])
             intervention2 = a2c_manager.choose_action([observation2, observation1])
 
-            prompt_1 = build_prompt(intervention1, last_action1, last_action2)
-            prompt_2 = build_prompt(intervention2, last_action2, last_action1)
+            # print(intervention1, intervention2)
 
-            action_1 = llm_agent_list[0].answer(prompt_1)
-            action_2 = llm_agent_list[1].answer(prompt_2)
+            prompt_1 = build_prompt(intervention1, convert_int_to_str(observation1), convert_int_to_str(observation2))
+            prompt_2 = build_prompt(intervention2, convert_int_to_str(observation2), convert_int_to_str(observation1))
 
-            all_actions1.append(action_1)
-            all_actions2.append(action_2)
+            action_1_str = llm_agent_list[0].answer(prompt_1)
+            action_2_str = llm_agent_list[1].answer(prompt_2)
 
-            reward1 = get_reward(action_1)
-            reward2 = get_reward(action_2)
-            # print(action_1, action_2)
+            all_actions1.append(action_1_str)
+            all_actions2.append(action_2_str)
 
-            next_observation1 = convert_str_to_int(action_1)
-            next_observation2 = convert_str_to_int(action_2)
+            reward1 = get_reward(action_1_str)
+            reward2 = get_reward(action_2_str)
 
-            a2c_manager.train([observation1, observation2], convert_str_to_int(action_1), reward1,
+            next_observation1 = convert_str_to_int(action_1_str)
+            next_observation2 = convert_str_to_int(action_2_str)
+
+            a2c_manager.train([observation1, observation2], intervention1, reward1,
                               [next_observation1, next_observation2], done)
-            a2c_manager.train([observation2, observation1], convert_str_to_int(action_2), reward2,
+            a2c_manager.train([observation2, observation1], intervention2, reward2,
                               [next_observation2, next_observation1], done)
 
             observation1 = next_observation1
@@ -97,9 +102,9 @@ for episode in range(training_episode):
     C_ratio_list1.append(C_ratio1)
     C_ratio_list2.append(C_ratio2)
 
-    if (episode+1) % 1 == 0:
+    if (episode+1) % 100 == 0:
         a2c_manager.save_model('save_model/manager_' + str(episode))
 
     print(f'Duration: {round(time.time() - initial_time, 2)}, Round:{episode}, C ratio 1: {C_ratio1}, C ratio 2: {C_ratio2}, '
-          f'avg C ratio 1: {np.mean(C_ratio_list1)}, avg C ratio 2: {np.mean(C_ratio_list2)}')
+          f'avg C ratio 1: {np.mean(np.array(C_ratio_list1)[-100:])}, avg C ratio 2: {np.mean(np.array(C_ratio_list2)[-100:])}')
 
