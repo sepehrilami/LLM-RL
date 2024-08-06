@@ -184,7 +184,7 @@ for episode in range(training_episode):
     avg_C_ratio_list.append(number_C/total_number)
 
     if (episode+1) % 10 == 0:
-        a2c_manager.save_model('save_model/manager_networks_20nodes_' + str(episode))
+        a2c_manager.save_model(f'save_model/manager_networks_{num_agent}nodes_{episode+1}')
 
     print(f'Duration: {round(time.time() - initial_time, 2)}, Round:{episode}, '
           f'C ratio: {number_C/total_number}, avg C ratio: {np.mean(avg_C_ratio_list)}')

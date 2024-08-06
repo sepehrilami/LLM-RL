@@ -81,7 +81,7 @@ class Provider:
                 flag = True
                 time.sleep(5)
 
-            if attempt >= 10:
+            if attempt >= 20:
                 print("attempt more than tolerance, terminate the process")
                 exit()
         # print(response)

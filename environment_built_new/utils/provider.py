@@ -74,7 +74,7 @@ def query_llm(self, prompt):
         flag = False
         try:
             response = self.client.invoke(messages)
-            if response.content != "C" and response.content != "D":
+            if response.content not in ["C", "D"]:
                 # print(response.content)
                 attempt += 1
                 flag = True
