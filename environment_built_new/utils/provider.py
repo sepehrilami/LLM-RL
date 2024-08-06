@@ -1,4 +1,5 @@
 import json
+import time
 
 from langchain_groq import ChatGroq
 from langchain_community.chat_models import ChatOllama
@@ -62,19 +63,34 @@ class Provider:
             exit()
         return client
     
-    def query_llm(self, memory, memory_length, actions, agent_name):
-        self.memory = memory
-        self.memory_length = memory_length
-        self.actions = actions
-        # self.family_name = family_name
-        self.agent_name = agent_name
+def query_llm(self, prompt):
+    format_instructions = ""
+    attempt = 0
+    flag = True
+    messages = []
+    messages.insert(0, SystemMessage(content=f"{prompt}\n\n{format_instructions}"))
+    # print(messages)
+    while flag:
+        flag = False
+        try:
+            response = self.client.invoke(messages)
+            if response.content != "C" and response.content != "D":
+                # print(response.content)
+                attempt += 1
+                flag = True
+                print(f"attempt: {attempt}, respond nonsense")
+                time.sleep(5)
+        except:
+            print(f"attempt: {attempt}, groq broke")
+            attempt += 1
+            flag = True
+            time.sleep(5)
 
-        messages = self.get_messages()
-        
-        response = self.client.invoke(messages)
-        # print(response)
-        # response = json.loads(response.content)
-        return response
+        if attempt >= 10:
+            print("attempt more than tolerance, terminate the process")
+            exit()
+    # print(response)
+    return response
 
     def get_messages(self):
         format_instructions = self.get_format_instructions()
