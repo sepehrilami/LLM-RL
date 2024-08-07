@@ -56,6 +56,18 @@ def get_reward(action1, action2):
             return ((5+0)-2)/(6-2)
         else:
             return ((1+1)-2)/(6-2)
+        
+def get_individual_reward(action1, action2):
+    if action1 == "C":
+        if action2 == "C":
+            return 3
+        else:
+            return 0
+    else:
+        if action2 == "C":
+            return 5
+        else:
+            return 1        
 
 def stat_analysis(all_actions):
     # this list is a list of C and D actions.
