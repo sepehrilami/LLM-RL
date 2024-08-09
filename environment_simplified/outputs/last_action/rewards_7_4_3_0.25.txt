@@ -1,0 +1,16 @@
+Round:0, Step:0, Step rewards: 14
+Round:0, Step:0, Total C ratio:0.0
+Round:0, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}
+Round:0, Step:1, Step rewards: 14
+Round:0, Step:1, Total C ratio:0.0
+Round:0, Step:1, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}
+Round:0, Step:2, Step rewards: 42
+Round:0, Step:2, Total C ratio:0.33
+Round:0, Step:2, Pair actions: {'CC': 7, 'CD': 0, 'DC': 0, 'DD': 0}
+Round:0, Step:3, Step rewards: 42
+Round:0, Step:3, Total C ratio:0.5
+Round:0, Step:3, Pair actions: {'CC': 7, 'CD': 0, 'DC': 0, 'DD': 0}
+Round:0, Step rewards: [14, 14, 42, 42]
+Round:0, Total C ratio:[0.0, 0.0, 0.33, 0.5]
+Round:0, Pair actions: [{'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}, {'CC': 7, 'CD': 0, 'DC': 0, 'DD': 0}, {'CC': 7, 'CD': 0, 'DC': 0, 'DD': 0}]
+------------------------------------

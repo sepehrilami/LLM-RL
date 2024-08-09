@@ -130,14 +130,25 @@ def calc_population_C_rate(C_ratio_list):
     total_number = np.sum(total_number_list)
     return round(number_C/total_number, 2)
 
+def update_pair_actions(pair_actions, action1, action2):
+    if action1 == 'C' and action2 == 'C':
+        pair_actions['CC'] += 1
+    elif action1 == 'C' and action2 == 'D':
+        pair_actions['CD'] += 1
+    elif action1 == 'D' and action2 == 'C':
+        pair_actions['DC'] += 1
+    elif action1 == 'D' and action2 == 'D':
+        pair_actions['DD'] += 1
+    return pair_actions
+
 # set parameters
-num_agent = 10
-steps = 10
+num_agent = 5
+steps = 4
 rounds = 2
-edge_prob = 0.2
+edge_prob = 0.25
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
 intervention_types = ['RL', 'last_action', 'agent_ratio', 'network_ratio', 'randomized']
-intervention_type = 'RL'
+intervention_type = 'last_action'
 
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
@@ -185,6 +196,7 @@ for episode in range(rounds):
     observation_list = -np.ones((num_agent, num_agent, 2))
 
     link_list = list(g.edges())
+    print(f'Number of connections: {len(link_list)}')
     C_ratio_list = np.zeros((num_agent, 2)) # the first value in second dim is the C_ratio, the second value is the number of actions.
     intervention_list = -np.ones((num_agent, num_agent, 2))
 
@@ -193,28 +205,32 @@ for episode in range(rounds):
     round_intervention_list_record = []
 
     step_rewards = []
+    total_C_ratios = []
+    total_pair_actions = []
+    total_C_ratio_list_per_step =[]
     for step in range(steps):
+        # print 1 prompt per each step
+        flag = False
+        
+        
+        C_ratio_list_per_step = np.zeros((num_agent, 2))
         step_reward = 0
+        pair_actions = {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 0}
         for (index1, index2) in link_list:
             # no RL intervention in first 2 steps
             # because we always get DD in the first step with "no history" prompt.
-            if step < 2:
-                prompt_1, prompt_2, intervention1, intervention2 = create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, index2, step)
-                
-                action_1_str, action_2_str = get_LLM_response(llm_agent_list, prompt_1, prompt_2)
 
-                observation_list[index1, index2] = [convert_str_to_int(action_1_str), convert_str_to_int(action_2_str)]
-                observation_list[index2, index1] = [convert_str_to_int(action_2_str), convert_str_to_int(action_1_str)]
-
-            else:
-                prompt_1, prompt_2, intervention1, intervention2 = create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, index2, step)
-                
-                action_1_str, action_2_str = get_LLM_response(llm_agent_list, prompt_1, prompt_2)
-
+            prompt_1, prompt_2, intervention1, intervention2 = create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, index2, step)
+            
+            action_1_str, action_2_str = get_LLM_response(llm_agent_list, prompt_1, prompt_2)
+            pair_actions = update_pair_actions(pair_actions, action_1_str, action_2_str)
+            
             step_reward += get_individual_reward(action_1_str, action_2_str)
             step_reward += get_individual_reward(action_2_str, action_1_str)
             
             C_ratio_list = update_C_ratio_list(C_ratio_list, index1, index2, action_1_str, action_2_str)
+            C_ratio_list_per_step = update_C_ratio_list(C_ratio_list_per_step, index1, index2, action_1_str, action_2_str)
+
 
             observation_list[index1, index2] = [convert_str_to_int(action_1_str), convert_str_to_int(action_2_str)]
             observation_list[index2, index1] = [convert_str_to_int(action_2_str), convert_str_to_int(action_1_str)]
@@ -222,19 +238,41 @@ for episode in range(rounds):
             intervention_list[index1, index2] = [intervention1, intervention2]
             intervention_list[index2, index1] = [intervention2, intervention1]
 
+        if flag == False:
+            print('---')
+            print(f'Round:{episode}, Step:{step}, Prompt: {prompt_1}')
+            print('---')
+            flag = True
+            
         # updating matrixes for each step
         round_agent_ratio_list_record.append(C_ratio_list)
         round_observation_list_record.append(observation_list)
         round_intervention_list_record.append(intervention_list)
+        
 
         total_C_ratio = calc_population_C_rate(C_ratio_list)
+        total_C_ratio_per_step = calc_population_C_rate(C_ratio_list_per_step)
 
-        # print(f'Round:{episode}, Step:{step}, C ratio: {total_C_ratio}')        
-        
+        print(f'Round:{episode}, Step:{step}, C ratio per step: {total_C_ratio_per_step}, step_reward: {step_reward}, C ratio: {total_C_ratio}')
         step_rewards.append(step_reward)
+        total_C_ratios.append(total_C_ratio)
+        total_pair_actions.append(pair_actions)
+        total_C_ratio_list_per_step.append(C_ratio_list_per_step)
+        
+        # save every step data
+        with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
+            f.write(f'Round:{episode}, Step:{step}, Step rewards: {step_reward}\n')
+            f.write(f'Round:{episode}, Step:{step}, Total C ratio:{total_C_ratio}\n')
+            f.write(f'Round:{episode}, Step:{step}, Pair actions: {pair_actions}\n')
+            f.write(f'Round:{episode}, Step:{step}, C ratio per step: {total_C_ratio_per_step}\n')
         
     with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
         f.write(f'Round:{episode}, Step rewards: {step_rewards}\n')
+        f.write(f'Round:{episode}, Total C ratio:{total_C_ratios}\n')
+        f.write(f'Round:{episode}, Pair actions: {total_pair_actions}\n')
+        f.write(f'Round:{episode}, C ratio per step: {total_C_ratio_list_per_step}\n')
+        f.write('------------------------------------\n')
+        
     print(f'Round:{episode}, Step rewards: {step_rewards}')
 
     # updating matrixes for each round
