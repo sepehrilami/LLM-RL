@@ -142,8 +142,8 @@ def update_pair_actions(pair_actions, action1, action2):
     return pair_actions
 
 # set parameters
-num_agent = 5
-steps = 4
+num_agent = 20
+steps = 20
 rounds = 2
 edge_prob = 0.25
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
@@ -162,7 +162,7 @@ a2c_manager.load_model(f'save_model/manager_networks_20nodes_40')
 print(f'num_agent, steps, rounds, edge_prob: {run_spec} \nintervention_type: {intervention_type}')
 
 prompt_option_no_history_template = prompts_file['prompt_no_history']
-prompt_option_markovian_history_template = prompts_file['template_markovian_history']
+prompt_option_markovian_history_template = prompts_file['new_template_markovian_history']
 prompt_option_both_history_template = prompts_file['template_markovian_both_ratio_history']
 prompt_option_neighbor_history_template = prompts_file['template_markovian_network_ratio_history']
 
@@ -211,8 +211,7 @@ for episode in range(rounds):
     for step in range(steps):
         # print 1 prompt per each step
         flag = False
-        
-        
+         
         C_ratio_list_per_step = np.zeros((num_agent, 2))
         step_reward = 0
         pair_actions = {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 0}
@@ -238,11 +237,11 @@ for episode in range(rounds):
             intervention_list[index1, index2] = [intervention1, intervention2]
             intervention_list[index2, index1] = [intervention2, intervention1]
 
-        if flag == False:
-            print('---')
-            print(f'Round:{episode}, Step:{step}, Prompt: {prompt_1}')
-            print('---')
-            flag = True
+        # if flag == False:
+        #     print('---')
+        #     print(f'Round:{episode}, Step:{step}, Prompt: {prompt_1}')
+        #     print('---')
+        #     flag = True
             
         # updating matrixes for each step
         round_agent_ratio_list_record.append(C_ratio_list)

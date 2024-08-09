@@ -34,7 +34,7 @@ all_actions1 = []
 # freq2 = 'sometimes'
 # print(f'Agent 1: {freq1}, Agent 2: {freq2}')
 print('Start playing...')
-all_keys = ['final_template']
+all_keys = ['template_markovian_history_DD']
 prompt_list = [prompts_file[key] for key in all_keys]
 for i, prompt_1 in enumerate(prompt_list):
     all_actions1 = []
