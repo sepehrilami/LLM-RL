@@ -16,7 +16,7 @@ def build_prompt(intervention, last_action1="D", last_action2="D", own_ratio="ra
     elif intervention == 2:
         prompt = multiple_input_prompt_neighbor.format(your_action=last_action1, other_action=last_action2, your_ratio=own_ratio, neighbor_ratio=neighbor_ratio)
     elif intervention is None:
-        prompt = prompts_file['prompt_no_history']
+        prompt = prompts_file['template_no_history']
 
     return prompt
 
@@ -49,7 +49,6 @@ def cal_neighbor_C(g, C_ratio_list, index_own):
 
     return number_C / total_number
 
-
 def one_hot_last_action(observation):
     if observation == -1: # no previous history against this guy
         return [1, 0, 0]
@@ -61,7 +60,7 @@ def one_hot_last_action(observation):
 start_time = datetime.now()
 num_agent = 20
 game_length = 20
-training_episode = 100
+training_episode = 50
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
 env_settings = json.load(open('settings/env_settings.json'))
@@ -72,7 +71,7 @@ llm_agent_list = [LLMAgent(env_settings, 'llm_agent'+str(i)) for i in range(num_
 initial_time = time.time()
 # outer loop for rounds
 
-prompt_option_no_history_template = prompts_file['prompt_no_history']
+prompt_option_no_history_template = prompts_file['template_no_history']
 prompt_option_markovian_history_template = prompts_file['template_markovian_history']
 prompt_option_both_history_template = prompts_file['template_markovian_both_ratio_history']
 prompt_option_neighbor_history_template = prompts_file['template_markovian_network_ratio_history']
@@ -93,7 +92,6 @@ multiple_input_prompt_neighbor = PromptTemplate(
 whole_C_ratio_list = []
 avg_C_ratio_list = []
 for episode in range(training_episode):
-
     done = False
 
     g = nx.erdos_renyi_graph(num_agent, p=0.25)
@@ -131,11 +129,6 @@ for episode in range(training_episode):
 
                 obs_input1 = observation1 + observation2 + own_frequency1 + own_frequency2 + neighbors_frequency1
                 obs_input2 = observation2 + observation1 + own_frequency2 + own_frequency1 + neighbors_frequency2
-
-                # if observation1 == -1 or observation2 == -1:
-                #     intervention1 = 0
-                #     intervention2 = 0
-                # else:
 
                 # intervention from RL agent
                 intervention1 = a2c_manager.choose_action(obs_input1)
@@ -183,7 +176,7 @@ for episode in range(training_episode):
     total_number = np.sum(total_number_list)
     avg_C_ratio_list.append(number_C/total_number)
 
-    if (episode+1) % 10 == 0:
+    if (episode+1) % 5 == 0:
         a2c_manager.save_model(f'save_model/manager_networks_{num_agent}nodes_{episode+1}')
 
     print(f'Duration: {round(time.time() - initial_time, 2)}, Round:{episode}, '

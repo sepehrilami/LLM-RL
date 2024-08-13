@@ -80,7 +80,7 @@ def connected_erdos_renyi_graph(n, p):
             return g    
 
 def create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, index2, step):
-    if step < 2:
+    if step < 1:
         intervention1 = None
         intervention2 = None
 
@@ -153,7 +153,7 @@ def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total
 # set parameters
 num_agent = 20
 steps = 20
-rounds = 10
+rounds = 1
 edge_prob = 0.25
 
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
@@ -202,6 +202,7 @@ rounds_total_reward = []
 rounds_total_C_ratio = []
 rounds_total_pair_actions = []
 rounds_total_C_ratio_per_step = []
+
 for episode in range(rounds):
 
     # creating the network
@@ -211,7 +212,9 @@ for episode in range(rounds):
 
     link_list = list(g.edges())
     print(f'Number of connections: {len(link_list)}')
-    C_ratio_list = np.zeros((num_agent, 2)) # the first value in second dim is the C_ratio, the second value is the number of actions.
+    C_ratio_list = np.zeros(
+        (num_agent, 2))  # the first value in second dim is the C_ratio, the second value is the number of actions.
+    intervention_list = -np.ones((num_agent, num_agent, 2))
 
     round_observation_list_record = []
     round_agent_ratio_list_record = []
@@ -220,11 +223,10 @@ for episode in range(rounds):
     step_rewards = []
     total_C_ratios = []
     total_pair_actions = []
-    total_C_ratio_list_per_step =[]
+    total_C_ratio_list_per_step = []
     for step in range(steps):
         # print 1 prompt per each step
         flag = False
-        intervention_list = -np.ones((num_agent, num_agent, 2))
 
         C_ratio_list_per_step = np.zeros((num_agent, 2))
         step_reward = 0
@@ -233,24 +235,26 @@ for episode in range(rounds):
             # no RL intervention in first 2 steps
             # because we always get DD in the first step with "no history" prompt.
 
-            prompt_1, prompt_2, intervention1, intervention2 = create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, index2, step)
+            prompt_1, prompt_2, intervention1, intervention2 = create_prompt(intervention_type, g, C_ratio_list,
+                                                                             observation_list, index1, index2, step)
 
             action_1_str, action_2_str = get_LLM_response(llm_agent_list, prompt_1, prompt_2)
             pair_actions = update_pair_actions(pair_actions, action_1_str, action_2_str)
 
             step_reward += get_individual_reward(action_1_str, action_2_str)
             step_reward += get_individual_reward(action_2_str, action_1_str)
-            
-            C_ratio_list = update_C_ratio_list(C_ratio_list, index1, index2, action_1_str, action_2_str)
-            C_ratio_list_per_step = update_C_ratio_list(C_ratio_list_per_step, index1, index2, action_1_str, action_2_str)
 
+            C_ratio_list = update_C_ratio_list(C_ratio_list, index1, index2, action_1_str, action_2_str)
+            C_ratio_list_per_step = update_C_ratio_list(C_ratio_list_per_step, index1, index2, action_1_str,
+                                                        action_2_str)
 
             observation_list[index1, index2] = [convert_str_to_int(action_1_str), convert_str_to_int(action_2_str)]
             observation_list[index2, index1] = [convert_str_to_int(action_2_str), convert_str_to_int(action_1_str)]
 
             intervention_list[index1, index2] = [intervention1, intervention2]
             intervention_list[index2, index1] = [intervention2, intervention1]
-
+            # print(intervention1, intervention2)
+            time.sleep(2)
         # if flag == False:
         #     print('---')
         #     print(f'Round:{episode}, Step:{step}, Prompt: {prompt_1}')
@@ -258,6 +262,7 @@ for episode in range(rounds):
         #     flag = True
 
         # updating matrixes for each step
+        print(intervention_list)
         round_agent_ratio_list_record.append(C_ratio_list)
         round_observation_list_record.append(observation_list)
         round_intervention_list_record.append(intervention_list)
@@ -270,25 +275,12 @@ for episode in range(rounds):
         total_C_ratios.append(total_C_ratio)
         total_pair_actions.append(pair_actions)
         total_C_ratio_list_per_step.append(total_C_ratio_per_step)
-        
-        # save every step data
-        with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
-            f.write(f'Round:{episode}, Step:{step}, Step rewards: {step_reward}\n')
-            f.write(f'Round:{episode}, Step:{step}, Total C ratio:{total_C_ratio}\n')
-            f.write(f'Round:{episode}, Step:{step}, Pair actions: {pair_actions}\n')
-            f.write(f'Round:{episode}, Step:{step}, C ratio per step: {total_C_ratio_per_step}\n')
 
+        # save every step data
     rounds_total_reward.append(step_rewards)
     rounds_total_C_ratio.append(total_C_ratios)
     rounds_total_pair_actions.append(total_pair_actions)
     rounds_total_C_ratio_per_step.append(total_C_ratio_list_per_step)
-
-    with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
-        f.write(f'Round:{episode}, Step rewards: {step_rewards}\n')
-        f.write(f'Round:{episode}, Total C ratio:{total_C_ratios}\n')
-        f.write(f'Round:{episode}, Pair actions: {total_pair_actions}\n')
-        f.write(f'Round:{episode}, C ratio per step: {total_C_ratio_list_per_step}\n')
-        f.write('------------------------------------\n')
 
     print(f'Round:{episode}, Step rewards: {step_rewards}')
 
@@ -301,7 +293,17 @@ for episode in range(rounds):
     print(f'Duration: {round(time.time() - initial_time, 2)}, Round:{episode}, '
           f'C ratio: {total_C_ratio}')
 
-save_everything(whole_agent_ratio_list_record, whole_observation_list_record,
-                whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec)
-
-save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total_pair_actions, rounds_total_C_ratio_per_step, intervention_type, run_spec)
+# g = connected_erdos_renyi_graph(n=num_agent, p=edge_prob)
+# C_ratio_list = np.zeros((num_agent, 2))
+# observation_pos = [[1,0,0], [0,1,0], [0,0,1]]
+# feq_pos = [[1,0,0], [0,1,0], [0,0,1]]
+#
+# for observation1 in observation_pos:
+#     for observation2 in observation_pos:
+#         for own_frequency1 in feq_pos:
+#             for own_frequency2 in feq_pos:
+#                 for neighbors_frequency1 in feq_pos:
+#
+#                     obs_input1 = observation1 + observation2 + own_frequency1 + own_frequency2 + neighbors_frequency1
+#                     intervention1 = a2c_manager.choose_action(obs_input1)
+#                     print(f'obs_input {obs_input1} intervention {intervention1}')
