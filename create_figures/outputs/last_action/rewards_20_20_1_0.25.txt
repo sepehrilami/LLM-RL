@@ -1,0 +1,48 @@
+Round:0, Step:0, Step rewards: 223
+Round:0, Step:0, Total C ratio:0.48
+Round:0, Step:0, Pair actions: {'CC': 13, 'CD': 11, 'DC': 12, 'DD': 15}
+Round:0, Step:0, C ratio per step: 0.48
+Round:0, Step:1, Step rewards: 225
+Round:0, Step:1, Total C ratio:0.48
+Round:0, Step:1, Pair actions: {'CC': 12, 'CD': 11, 'DC': 14, 'DD': 14}
+Round:0, Step:1, C ratio per step: 0.48
+Round:0, Step:2, Step rewards: 177
+Round:0, Step:2, Total C ratio:0.43
+Round:0, Step:2, Pair actions: {'CC': 15, 'CD': 1, 'DC': 4, 'DD': 31}
+Round:0, Step:2, C ratio per step: 0.34
+Round:0, Step:3, Step rewards: 213
+Round:0, Step:3, Total C ratio:0.45
+Round:0, Step:3, Pair actions: {'CC': 18, 'CD': 3, 'DC': 10, 'DD': 20}
+Round:0, Step:3, C ratio per step: 0.48
+Round:0, Step:4, Step rewards: 219
+Round:0, Step:4, Total C ratio:0.46
+Round:0, Step:4, Pair actions: {'CC': 21, 'CD': 6, 'DC': 5, 'DD': 19}
+Round:0, Step:4, C ratio per step: 0.52
+Round:0, Step:5, Step rewards: 238
+Round:0, Step:5, Total C ratio:0.49
+Round:0, Step:5, Pair actions: {'CC': 25, 'CD': 5, 'DC': 7, 'DD': 14}
+Round:0, Step:5, C ratio per step: 0.61
+Round:0, Step:6, Step rewards: 227
+Round:0, Step:6, Total C ratio:0.5
+Round:0, Step:6, Pair actions: {'CC': 26, 'CD': 6, 'DC': 1, 'DD': 18}
+Round:0, Step:6, C ratio per step: 0.58
+Round:0, Step:7, Step rewards: 231
+Round:0, Step:7, Total C ratio:0.51
+Round:0, Step:7, Pair actions: {'CC': 27, 'CD': 6, 'DC': 1, 'DD': 17}
+Round:0, Step:7, C ratio per step: 0.6
+Round:0, Step:8, Step rewards: 237
+Round:0, Step:8, Total C ratio:0.52
+Round:0, Step:8, Pair actions: {'CC': 27, 'CD': 3, 'DC': 6, 'DD': 15}
+Round:0, Step:8, C ratio per step: 0.62
+Round:0, Step:9, Step rewards: 238
+Round:0, Step:9, Total C ratio:0.53
+Round:0, Step:9, Pair actions: {'CC': 28, 'CD': 5, 'DC': 3, 'DD': 15}
+Round:0, Step:9, C ratio per step: 0.63
+Round:0, Step:10, Step rewards: 245
+Round:0, Step:10, Total C ratio:0.54
+Round:0, Step:10, Pair actions: {'CC': 29, 'CD': 4, 'DC': 5, 'DD': 13}
+Round:0, Step:10, C ratio per step: 0.66
+Round:0, Step:11, Step rewards: 236
+Round:0, Step:11, Total C ratio:0.55
+Round:0, Step:11, Pair actions: {'CC': 29, 'CD': 2, 'DC': 4, 'DD': 16}
+Round:0, Step:11, C ratio per step: 0.63

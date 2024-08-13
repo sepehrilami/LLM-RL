@@ -1,0 +1,147 @@
+Round:0, Step:0, Step rewards: 14
+Round:0, Step:0, Total C ratio:0.0
+Round:0, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}
+Round:0, Step:0, C ratio per step: 0.0
+Round:0, Step:1, Step rewards: 14
+Round:0, Step:1, Total C ratio:0.0
+Round:0, Step:1, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}
+Round:0, Step:1, C ratio per step: 0.0
+Round:0, Step:2, Step rewards: 14
+Round:0, Step:2, Total C ratio:0.0
+Round:0, Step:2, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}
+Round:0, Step:2, C ratio per step: 0.0
+Round:0, Step:3, Step rewards: 14
+Round:0, Step:3, Total C ratio:0.0
+Round:0, Step:3, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}
+Round:0, Step:3, C ratio per step: 0.0
+Round:0, Step rewards: [14, 14, 14, 14]
+Round:0, Total C ratio:[0.0, 0.0, 0.0, 0.0]
+Round:0, Pair actions: [{'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 7}]
+Round:0, C ratio per step: [array([[0., 2.],
+       [0., 2.],
+       [0., 1.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.]]), array([[0., 2.],
+       [0., 2.],
+       [0., 1.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.]]), array([[0., 2.],
+       [0., 2.],
+       [0., 1.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.]]), array([[0., 2.],
+       [0., 2.],
+       [0., 1.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.]])]
+------------------------------------
+Round:1, Step:0, Step rewards: 18
+Round:1, Step:0, Total C ratio:0.0
+Round:1, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:1, Step:0, C ratio per step: 0.0
+Round:1, Step:1, Step rewards: 18
+Round:1, Step:1, Total C ratio:0.0
+Round:1, Step:1, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:1, Step:1, C ratio per step: 0.0
+Round:1, Step:2, Step rewards: 18
+Round:1, Step:2, Total C ratio:0.0
+Round:1, Step:2, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:1, Step:2, C ratio per step: 0.0
+Round:1, Step:3, Step rewards: 18
+Round:1, Step:3, Total C ratio:0.0
+Round:1, Step:3, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:1, Step:3, C ratio per step: 0.0
+Round:1, Step rewards: [18, 18, 18, 18]
+Round:1, Total C ratio:[0.0, 0.0, 0.0, 0.0]
+Round:1, Pair actions: [{'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}]
+Round:1, C ratio per step: [array([[0., 2.],
+       [0., 4.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.],
+       [0., 4.],
+       [0., 2.]]), array([[0., 2.],
+       [0., 4.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.],
+       [0., 4.],
+       [0., 2.]]), array([[0., 2.],
+       [0., 4.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.],
+       [0., 4.],
+       [0., 2.]]), array([[0., 2.],
+       [0., 4.],
+       [0., 1.],
+       [0., 2.],
+       [0., 1.],
+       [0., 2.],
+       [0., 4.],
+       [0., 2.]])]
+------------------------------------
+Round:2, Step:0, Step rewards: 18
+Round:2, Step:0, Total C ratio:0.0
+Round:2, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:2, Step:0, C ratio per step: 0.0
+Round:2, Step:1, Step rewards: 18
+Round:2, Step:1, Total C ratio:0.0
+Round:2, Step:1, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:2, Step:1, C ratio per step: 0.0
+Round:2, Step:2, Step rewards: 18
+Round:2, Step:2, Total C ratio:0.0
+Round:2, Step:2, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:2, Step:2, C ratio per step: 0.0
+Round:2, Step:3, Step rewards: 18
+Round:2, Step:3, Total C ratio:0.0
+Round:2, Step:3, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}
+Round:2, Step:3, C ratio per step: 0.0
+Round:2, Step rewards: [18, 18, 18, 18]
+Round:2, Total C ratio:[0.0, 0.0, 0.0, 0.0]
+Round:2, Pair actions: [{'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 9}]
+Round:2, C ratio per step: [array([[0., 3.],
+       [0., 2.],
+       [0., 2.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 3.],
+       [0., 2.]]), array([[0., 3.],
+       [0., 2.],
+       [0., 2.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 3.],
+       [0., 2.]]), array([[0., 3.],
+       [0., 2.],
+       [0., 2.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 3.],
+       [0., 2.]]), array([[0., 3.],
+       [0., 2.],
+       [0., 2.],
+       [0., 3.],
+       [0., 1.],
+       [0., 2.],
+       [0., 3.],
+       [0., 2.]])]
+------------------------------------
