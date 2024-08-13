@@ -1858,3 +1858,11 @@ Round:1, C ratio per step: [array([[0., 5.],
        [0.        , 6.        ],
        [0.33333333, 6.        ]])]
 ------------------------------------
+Round:0, Step:0, Step rewards: 201
+Round:0, Step:0, Total C ratio:0.52
+Round:0, Step:0, Pair actions: {'CC': 10, 'CD': 11, 'DC': 14, 'DD': 8}
+Round:0, Step:0, C ratio per step: 0.52
+Round:0, Step:0, Step rewards: 196
+Round:0, Step:0, Total C ratio:0.43
+Round:0, Step:0, Pair actions: {'CC': 9, 'CD': 11, 'DC': 11, 'DD': 16}
+Round:0, Step:0, C ratio per step: 0.43

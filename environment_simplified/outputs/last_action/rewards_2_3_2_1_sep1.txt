@@ -1,0 +1,34 @@
+Round:0, Step:0, Step rewards: 5
+Round:0, Step:0, Total C ratio:0.5
+Round:0, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 1, 'DD': 0}
+Round:0, Step:0, C ratio per step: 0.5
+Round:0, Step:1, Step rewards: 2
+Round:0, Step:1, Total C ratio:0.25
+Round:0, Step:1, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 1}
+Round:0, Step:1, C ratio per step: 0.0
+Round:0, Step:2, Step rewards: 6
+Round:0, Step:2, Total C ratio:0.5
+Round:0, Step:2, Pair actions: {'CC': 1, 'CD': 0, 'DC': 0, 'DD': 0}
+Round:0, Step:2, C ratio per step: 1.0
+Round:0, Step rewards: [5, 2, 6]
+Round:0, Total C ratio:[0.5, 0.25, 0.5]
+Round:0, Pair actions: [{'CC': 0, 'CD': 0, 'DC': 1, 'DD': 0}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 1}, {'CC': 1, 'CD': 0, 'DC': 0, 'DD': 0}]
+Round:0, C ratio per step: [0.5, 0.0, 1.0]
+------------------------------------
+Round:1, Step:0, Step rewards: 5
+Round:1, Step:0, Total C ratio:0.5
+Round:1, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 1, 'DD': 0}
+Round:1, Step:0, C ratio per step: 0.5
+Round:1, Step:1, Step rewards: 2
+Round:1, Step:1, Total C ratio:0.25
+Round:1, Step:1, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 1}
+Round:1, Step:1, C ratio per step: 0.0
+Round:1, Step:2, Step rewards: 5
+Round:1, Step:2, Total C ratio:0.33
+Round:1, Step:2, Pair actions: {'CC': 0, 'CD': 1, 'DC': 0, 'DD': 0}
+Round:1, Step:2, C ratio per step: 0.5
+Round:1, Step rewards: [5, 2, 5]
+Round:1, Total C ratio:[0.5, 0.25, 0.33]
+Round:1, Pair actions: [{'CC': 0, 'CD': 0, 'DC': 1, 'DD': 0}, {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 1}, {'CC': 0, 'CD': 1, 'DC': 0, 'DD': 0}]
+Round:1, C ratio per step: [0.5, 0.0, 0.5]
+------------------------------------
