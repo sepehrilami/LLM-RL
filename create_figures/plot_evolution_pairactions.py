@@ -67,14 +67,12 @@ plt.plot(x_smooth, y_smooth, label='DD')
 
 plt.ylim(-0.1, 1.1)
 plt.legend()
-plt.xlabel('Step')  
-plt.ylabel('Rate of pair choices')
-plt.title(f'Evolution of LLMs pair choices - {scenario} scenario')
+plt.xlabel('Step', fontsize=12)  
+plt.ylabel('Rate of pair choices', fontsize=13)
+plt.title(f'Evolution of LLMs pair choices - {scenario} scenario', fontsize=14)
 # make the x axis show integer only
 plt.xticks(np.arange(1, 21, 1.0))
-plt.savefig(os.path.join('../create_figures/figs/', f'pair_actions_{scenario}.png'), dpi=100)
-# save in pdf format
-plt.savefig(os.path.join('../create_figures/figs/', f'pair_actions_{scenario}.pdf'), dpi=100)
+plt.savefig(os.path.join('../create_figures/figs/', f'pair_actions_{scenario}.png'), dpi=500)
 plt.show()
 
 
