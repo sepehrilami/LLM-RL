@@ -63,7 +63,7 @@ def convert_str_to_int(action):
         print(f'Invalid action: {action}')
         return -1
     
-def stat_analysis(all_actuons):
+def stat_analysis(all_actions):
     # this list is a list of C and D actions.
     # count them and print the ration of C and D.
     np_actions = np.array(all_actions)

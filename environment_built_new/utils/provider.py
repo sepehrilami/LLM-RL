@@ -93,7 +93,7 @@ def query_llm(self, prompt):
     return response
 
     def get_messages(self):
-        format_instructions = self.get_format_instructions()
+        format_instructions = ""
 
         messages = []
         # for i in range(len(self.memory['prompt'])):

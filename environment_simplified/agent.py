@@ -41,7 +41,7 @@ class LLMAgent():
 
 
 class A2C_manager():
-    def __init__(self, state_dim, action_dim, actor_lr=0.001, critic_lr=0.005, gamma=0.9):
+    def __init__(self, state_dim, action_dim, actor_lr=0.001, critic_lr=0.005, gamma=0.99):
         self.gamma = gamma
         self.actor_critic = ActorCritic(state_dim, action_dim)
         self.optimizer_actor = optim.Adam(self.actor_critic.actor.parameters(), lr=actor_lr)
