@@ -1,0 +1,41 @@
+Round:0, Step:0, Step rewards: 26
+Round:0, Step:0, Total C ratio:0.0
+Round:0, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 13}
+Round:0, Step:0, C ratio per step: 0.0
+Round:0, Step:0, Step rewards: 24
+Round:0, Step:0, Total C ratio:0.0
+Round:0, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 12}
+Round:0, Step:0, C ratio per step: 0.0
+Round:0, Step:1, Step rewards: 24
+Round:0, Step:1, Total C ratio:0.0
+Round:0, Step:1, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 12}
+Round:0, Step:1, C ratio per step: 0.0
+Round:0, Step:2, Step rewards: 57
+Round:0, Step:2, Total C ratio:0.18
+Round:0, Step:2, Pair actions: {'CC': 3, 'CD': 3, 'DC': 4, 'DD': 2}
+Round:0, Step:2, C ratio per step: 0.54
+Round:0, Step:0, Step rewards: 64
+Round:0, Step:0, Total C ratio:0.69
+Round:0, Step:0, Pair actions: {'CC': 8, 'CD': 1, 'DC': 1, 'DD': 3}
+Round:0, Step:0, C ratio per step: 0.69
+Round:0, Step:1, Step rewards: 46
+Round:0, Step:1, Total C ratio:0.5
+Round:0, Step:1, Pair actions: {'CC': 2, 'CD': 1, 'DC': 3, 'DD': 7}
+Round:0, Step:1, C ratio per step: 0.31
+Round:0, Step:2, Step rewards: 63
+Round:0, Step:2, Total C ratio:0.55
+Round:0, Step:2, Pair actions: {'CC': 7, 'CD': 1, 'DC': 2, 'DD': 3}
+Round:0, Step:2, C ratio per step: 0.65
+Round:0, Step:3, Step rewards: 68
+Round:0, Step:3, Total C ratio:0.61
+Round:0, Step:3, Pair actions: {'CC': 9, 'CD': 2, 'DC': 0, 'DD': 2}
+Round:0, Step:3, C ratio per step: 0.77
+Round:0, Step:4, Step rewards: 72
+Round:0, Step:4, Total C ratio:0.65
+Round:0, Step:4, Pair actions: {'CC': 10, 'CD': 0, 'DC': 2, 'DD': 1}
+Round:0, Step:4, C ratio per step: 0.85
+Round:0, Step rewards: [64, 46, 63, 68, 72]
+Round:0, Total C ratio:[0.69, 0.5, 0.55, 0.61, 0.65]
+Round:0, Pair actions: [{'CC': 8, 'CD': 1, 'DC': 1, 'DD': 3}, {'CC': 2, 'CD': 1, 'DC': 3, 'DD': 7}, {'CC': 7, 'CD': 1, 'DC': 2, 'DD': 3}, {'CC': 9, 'CD': 2, 'DC': 0, 'DD': 2}, {'CC': 10, 'CD': 0, 'DC': 2, 'DD': 1}]
+Round:0, C ratio per step: [0.69, 0.31, 0.65, 0.77, 0.85]
+------------------------------------
