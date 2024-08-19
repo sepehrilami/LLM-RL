@@ -151,10 +151,10 @@ def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total
     np.save(f'{os.path.join(dir, f"rounds_total_C_ratio_per_step_{run_spec}")}', np.array(rounds_total_C_ratio_per_step))
 
 # set parameters
-num_agent = 20
-steps = 20
+num_agent = 2
+steps = 2
 rounds = 1
-edge_prob = 0.25
+edge_prob = 1
 
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
 intervention_types = ['RL', 'last_action', 'agent_ratio', 'network_ratio', 'randomized']
