@@ -1,0 +1,11 @@
+# Project dependencies
+
+# Core dependencies
+pip==24.2
+
+# Package dependencies
+numpy==2.0.1
+pandas==2.2.2
+matplotlib==3.9.1.post1
+scipy==1.14.0
+pillow==10.4.0
