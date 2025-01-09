@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-pair_actions = np.load('network_ratio/round_wise_data/rounds_total_pair_actions_20_20_10_0.25.npy', allow_pickle=True)
+pair_actions = np.load('last_action/round_wise_data/rounds_total_pair_actions_20_20_10_0.25_nun2.npy', allow_pickle=True)
 
 # data = pd.DataFrame(pair_actions)
 # data = pd.DataFrame.from_dict(pair_actions)
@@ -28,7 +28,7 @@ for i in range(np.shape(pair_actions)[0]):
 
 print(np.shape(CC_list))
 
-x = np.arange(np.shape(C_ratio)[1])
+x = np.arange(20)
 
 total_number = np.sum(CC_list + CD_list + DC_list + DD_list, axis=0) / 10
 print(total_number)
