@@ -1,0 +1,4 @@
+Round:0, Step:0, Step rewards: 106
+Round:0, Step:0, Total C ratio:0.0
+Round:0, Step:0, Pair actions: {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 53}
+Round:0, Step:0, C ratio per step: 0.0

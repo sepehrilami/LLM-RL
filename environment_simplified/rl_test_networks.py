@@ -17,7 +17,7 @@ def build_prompt(intervention, last_action1="D", last_action2="D", own_ratio="ra
     elif intervention == 2:
         prompt = multiple_input_prompt_neighbor.format(your_action=last_action1, other_action=last_action2, your_ratio=own_ratio, neighbor_ratio=neighbor_ratio)
     elif intervention is None:
-        prompt = prompts_file['template_no_history']
+        prompt = prompts_file['template_smaller']
     return prompt
 
 def update_C_ratio_list(C_ratio_list, index1, index2, action_1_str, action_2_str):
@@ -80,7 +80,7 @@ def connected_erdos_renyi_graph(n, p):
             return g    
 
 def create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, index2, step):
-    if step < 2:
+    if step == 0:   
         intervention1 = None
         intervention2 = None
 
@@ -89,6 +89,11 @@ def create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, 
 
         return prompt_1, prompt_2, intervention1, intervention2
     else:
+        if step == 1:
+            intervention_type = 'last_action'
+            print('Intervention type changed to last_action in step 1')
+        
+        print(f'Intervention type: {intervention_type}')
         own_frequency1 = frequence_number_to_index(C_ratio_list[index1, 0])
         own_frequency2 = frequence_number_to_index(C_ratio_list[index2, 0])
 
@@ -142,7 +147,7 @@ def update_pair_actions(pair_actions, action1, action2):
     return pair_actions
 
 def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total_pair_actions, rounds_total_C_ratio_per_step, intervention_type, run_spec):
-    dir = f'outputs/{intervention_type}/round_wise_data'
+    dir = f'outputs/{intervention_type}/round_wise_data_2025'
     if not os.path.exists(dir):
         os.makedirs(dir)
     np.save(f'{os.path.join(dir, f"rounds_total_reward_{run_spec}")}', np.array(rounds_total_reward))
@@ -151,9 +156,9 @@ def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total
     np.save(f'{os.path.join(dir, f"rounds_total_C_ratio_per_step_{run_spec}")}', np.array(rounds_total_C_ratio_per_step))
 
 # set parameters
-num_agent = 20
-steps = 20
-rounds = 1
+num_agent = 8
+steps = 5
+rounds = 2
 edge_prob = 0.25
 
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
@@ -301,7 +306,6 @@ for episode in range(rounds):
     print(f'Duration: {round(time.time() - initial_time, 2)}, Round:{episode}, '
           f'C ratio: {total_C_ratio}')
 
-save_everything(whole_agent_ratio_list_record, whole_observation_list_record,
-                whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec)
+# save_everything(whole_agent_ratio_list_record, whole_observation_list_record, whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec)
 
 save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total_pair_actions, rounds_total_C_ratio_per_step, intervention_type, run_spec)
