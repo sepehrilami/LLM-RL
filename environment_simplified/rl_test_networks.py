@@ -158,9 +158,9 @@ def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total
     np.save(f'{os.path.join(dir, f"rounds_total_C_ratio_per_step_{run_spec}")}', np.array(rounds_total_C_ratio_per_step))
 
 # set parameters
-num_agent = 5
-steps = 5
-rounds = 5
+num_agent = 20
+steps = 20
+rounds = 10
 edge_prob = 0.25
 
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
@@ -209,6 +209,7 @@ rounds_total_reward = []
 rounds_total_C_ratio = []
 rounds_total_pair_actions = []
 rounds_total_C_ratio_per_step = []
+print("Starting the simulation...")
 for episode in range(rounds):
 
     # creating the network
