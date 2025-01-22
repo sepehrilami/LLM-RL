@@ -122,7 +122,9 @@ def get_LLM_response(llm_agent_list, prompt_1, prompt_2):
     return action_1_str, action_2_str
 
 def save_everything(whole_agent_ratio_list_record, whole_observation_list_record, whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec):
-    dir = f'outputs/{intervention_type}'
+    dir = f'outputs/{intervention_type}/smaller_LA/'
+    if not os.path.exists(dir):
+        os.makedirs(dir)
     np.save(f'{os.path.join(dir, f"agent_ratio_matrix_{run_spec}")}', np.array(whole_agent_ratio_list_record))
     np.save(f'{os.path.join(dir, f"agent_last_action_matrix_{run_spec}")}', np.array(whole_observation_list_record))
     np.save(f'{os.path.join(dir, f"agent_intervention_matrix_{run_spec}")}', np.array(whole_intervention_list_record))
@@ -147,7 +149,7 @@ def update_pair_actions(pair_actions, action1, action2):
     return pair_actions
 
 def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total_pair_actions, rounds_total_C_ratio_per_step, intervention_type, run_spec):
-    dir = f'outputs/{intervention_type}/round_wise_data_2025'
+    dir = f'outputs/{intervention_type}/smaller_LA/round_wise_data_2025'
     if not os.path.exists(dir):
         os.makedirs(dir)
     np.save(f'{os.path.join(dir, f"rounds_total_reward_{run_spec}")}', np.array(rounds_total_reward))
@@ -156,14 +158,14 @@ def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total
     np.save(f'{os.path.join(dir, f"rounds_total_C_ratio_per_step_{run_spec}")}', np.array(rounds_total_C_ratio_per_step))
 
 # set parameters
-num_agent = 8
+num_agent = 5
 steps = 5
-rounds = 2
+rounds = 5
 edge_prob = 0.25
 
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
 intervention_types = ['RL', 'last_action', 'agent_ratio', 'network_ratio', 'randomized']
-intervention_type = 'network_ratio'
+intervention_type = 'RL'
 
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
@@ -277,23 +279,23 @@ for episode in range(rounds):
         total_C_ratio_list_per_step.append(total_C_ratio_per_step)
         
         # save every step data
-        with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
-            f.write(f'Round:{episode}, Step:{step}, Step rewards: {step_reward}\n')
-            f.write(f'Round:{episode}, Step:{step}, Total C ratio:{total_C_ratio}\n')
-            f.write(f'Round:{episode}, Step:{step}, Pair actions: {pair_actions}\n')
-            f.write(f'Round:{episode}, Step:{step}, C ratio per step: {total_C_ratio_per_step}\n')
+        # with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
+        #     f.write(f'Round:{episode}, Step:{step}, Step rewards: {step_reward}\n')
+        #     f.write(f'Round:{episode}, Step:{step}, Total C ratio:{total_C_ratio}\n')
+        #     f.write(f'Round:{episode}, Step:{step}, Pair actions: {pair_actions}\n')
+        #     f.write(f'Round:{episode}, Step:{step}, C ratio per step: {total_C_ratio_per_step}\n')
 
     rounds_total_reward.append(step_rewards)
     rounds_total_C_ratio.append(total_C_ratios)
     rounds_total_pair_actions.append(total_pair_actions)
     rounds_total_C_ratio_per_step.append(total_C_ratio_list_per_step)
 
-    with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
-        f.write(f'Round:{episode}, Step rewards: {step_rewards}\n')
-        f.write(f'Round:{episode}, Total C ratio:{total_C_ratios}\n')
-        f.write(f'Round:{episode}, Pair actions: {total_pair_actions}\n')
-        f.write(f'Round:{episode}, C ratio per step: {total_C_ratio_list_per_step}\n')
-        f.write('------------------------------------\n')
+    # with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
+    #     f.write(f'Round:{episode}, Step rewards: {step_rewards}\n')
+    #     f.write(f'Round:{episode}, Total C ratio:{total_C_ratios}\n')
+    #     f.write(f'Round:{episode}, Pair actions: {total_pair_actions}\n')
+    #     f.write(f'Round:{episode}, C ratio per step: {total_C_ratio_list_per_step}\n')
+    #     f.write('------------------------------------\n')
 
     print(f'Round:{episode}, Step rewards: {step_rewards}')
 
@@ -306,6 +308,6 @@ for episode in range(rounds):
     print(f'Duration: {round(time.time() - initial_time, 2)}, Round:{episode}, '
           f'C ratio: {total_C_ratio}')
 
-# save_everything(whole_agent_ratio_list_record, whole_observation_list_record, whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec)
+save_everything(whole_agent_ratio_list_record, whole_observation_list_record, whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec)
 
 save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total_pair_actions, rounds_total_C_ratio_per_step, intervention_type, run_spec)

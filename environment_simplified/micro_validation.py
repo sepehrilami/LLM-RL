@@ -7,8 +7,8 @@ from utils.utils import *
 from langchain_core.prompts import PromptTemplate
 
 start_time = datetime.now()
-num_agent = 2
-game_length = 100
+num_agent = 20
+game_length = 200
 
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
@@ -34,7 +34,7 @@ all_actions1 = []
 # freq2 = 'sometimes'
 # print(f'Agent 1: {freq1}, Agent 2: {freq2}')
 print('Start playing...')
-all_keys = ['template_smaller']
+all_keys = ['template_no_history']
 prompt_list = [prompts_file[key] for key in all_keys]
 for i, prompt_1 in enumerate(prompt_list):
     all_actions1 = []
