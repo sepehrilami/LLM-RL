@@ -60,7 +60,7 @@ def one_hot_last_action(observation):
 start_time = datetime.now()
 num_agent = 20
 game_length = 20
-training_episode = 50
+training_episode = 10
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
 env_settings = json.load(open('settings/env_settings.json'))

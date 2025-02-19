@@ -89,7 +89,7 @@ def create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, 
 
         return prompt_1, prompt_2, intervention1, intervention2
     else:
-        if step == 1:
+        if step < 10:
             intervention_type = 'last_action'
             print('Intervention type changed to last_action in step 1')
         
@@ -158,10 +158,10 @@ def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total
     np.save(f'{os.path.join(dir, f"rounds_total_C_ratio_per_step_{run_spec}")}', np.array(rounds_total_C_ratio_per_step))
 
 # set parameters
-num_agent = 20
-steps = 20
-rounds = 10
-edge_prob = 0.25
+num_agent = 4
+steps = 25
+rounds = 4
+edge_prob = 1
 
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
 intervention_types = ['RL', 'last_action', 'agent_ratio', 'network_ratio', 'randomized']
