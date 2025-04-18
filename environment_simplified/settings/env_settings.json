@@ -2,6 +2,6 @@
     "provider": "groq",
     "model": "llama3-70b-8192",
     "temperature": 0.8,
-    "api_key": "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",
+    "api_key": "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",
     "memory_length": 0
 }

@@ -7,12 +7,16 @@ from utils.utils import *
 from langchain_core.prompts import PromptTemplate
 
 start_time = datetime.now()
-num_agent = 20
+num_agent = 2
 game_length = 200
 
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
 env_settings = json.load(open('settings/env_settings.json'))
+
+# get model name from env_settings
+model_name = env_settings['model']
+
 # prompt_option_no_history_template = prompts_file['prompt_no_history']
 # prompt_option_markovian_history_template = prompts_file['prompt_markovian_history']
 
@@ -33,7 +37,7 @@ all_actions1 = []
 # freq1 = 'occasionally'
 # freq2 = 'sometimes'
 # print(f'Agent 1: {freq1}, Agent 2: {freq2}')
-print('Start playing...')
+print(f'Model {model_name} starting...')
 all_keys = ['template_no_history']
 prompt_list = [prompts_file[key] for key in all_keys]
 for i, prompt_1 in enumerate(prompt_list):
@@ -47,7 +51,10 @@ for i, prompt_1 in enumerate(prompt_list):
 
         action_1 = llm_agent_list[0].answer(prompt_1)
         # action_2 = llm_agent_list[1].answer(prompt_2)
-        all_actions1.append(action_1)
+
+        # getting first character since it outputs C,D with a new line
+        print(action_1)
+        all_actions1.append(action_1[0])
 
         # with open(f'micro-val-results/{filename}.json', 'w') as f:
         #         json.dump(all_actions1, f)

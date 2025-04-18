@@ -69,12 +69,12 @@ class Provider:
             flag = False
             try:
                 response = self.client.invoke(messages)
-                if response.content != "C" and response.content != "D":
+                if "C" not in response.content and "D" not in response.content:
                     # print(response.content)
                     attempt += 1
                     flag = True
-                    print(f"attempt: {attempt}, respond nonsense")
-                    time.sleep(5)
+                    print(f"attempt: {attempt}, respond nonsense: {response.content}")
+                    # time.sleep(5)
             except:
                 print(f"attempt: {attempt}, groq broke")
                 attempt += 1

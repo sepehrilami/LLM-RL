@@ -103,7 +103,7 @@ for episode in range(training_episode):
     for step in range(game_length):
         # print(step)
         for (index1, index2) in link_list:
-            if step < 2: # no RL intervention in first 2 steps because we always get DD in the first step with "no history" prompt
+            if step == 0: # no RL intervention in first 2 steps because we always get DD in the first step with "no history" prompt
                 prompt_1 = build_prompt(intervention=None)
                 prompt_2 = build_prompt(intervention=None)
                 action_1_str = llm_agent_list[index1].answer(prompt_1)
@@ -112,7 +112,17 @@ for episode in range(training_episode):
                 last_action1_str = action_1_str
                 last_action2_str = action_2_str
 
-            else:
+            elif step < 15:
+                # intervention: last_action
+                prompt_1 = build_prompt(0, last_action1_str, last_action2_str)
+                prompt_2 = build_prompt(0, last_action2_str, last_action1_str)
+                action_1_str = llm_agent_list[index1].answer(prompt_1)
+                action_2_str = llm_agent_list[index2].answer(prompt_2)
+                
+                last_action1_str = action_1_str
+                last_action2_str = action_2_str
+                
+            else:                    
                 if step == game_length - 1:
                     done = True
 

@@ -78,7 +78,7 @@ def query_llm(self, prompt):
                 # print(response.content)
                 attempt += 1
                 flag = True
-                print(f"attempt: {attempt}, respond nonsense")
+                print(f"attempt: {attempt}, respond nonsense: {response.content}")
                 time.sleep(5)
         except:
             print(f"attempt: {attempt}, groq broke")

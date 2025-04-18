@@ -9,6 +9,10 @@ import numpy as np
 from langchain_core.prompts import PromptTemplate
 import networkx as nx
 
+# Select 3 agents for deterministic behavior
+DETERMINISTIC_AGENT_IDS = np.random.choice(range(5), size=2, replace=False)  # Adjust '100' to total agent count
+print("Deterministic agents:", DETERMINISTIC_AGENT_IDS)
+
 def build_prompt(intervention, last_action1="D", last_action2="D", own_ratio="rarely",  other_ratio="rarely", neighbor_ratio="rarely"):
     if intervention == 0:
         prompt = multiple_input_prompt_mark.format(your_action=last_action1, other_action=last_action2)
@@ -17,7 +21,7 @@ def build_prompt(intervention, last_action1="D", last_action2="D", own_ratio="ra
     elif intervention == 2:
         prompt = multiple_input_prompt_neighbor.format(your_action=last_action1, other_action=last_action2, your_ratio=own_ratio, neighbor_ratio=neighbor_ratio)
     elif intervention is None:
-        prompt = prompts_file['template_smaller']
+        prompt = prompts_file['template_no_history']
     return prompt
 
 def update_C_ratio_list(C_ratio_list, index1, index2, action_1_str, action_2_str):
@@ -57,6 +61,7 @@ def choose_intervention(intervention_type, obs_input1, obs_input2):
     if intervention_type == 'RL':
         intervention1 = a2c_manager.choose_action(obs_input1)
         intervention2 = a2c_manager.choose_action(obs_input2)
+        print(f'Intervention type: {intervention_type}, intervention1: {intervention1}, intervention2: {intervention2}')
     elif intervention_type == 'last_action':
         intervention1 = 0
         intervention2 = 0
@@ -80,7 +85,7 @@ def connected_erdos_renyi_graph(n, p):
             return g    
 
 def create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, index2, step):
-    if step == 0:   
+    if step == 0:
         intervention1 = None
         intervention2 = None
 
@@ -89,11 +94,10 @@ def create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, 
 
         return prompt_1, prompt_2, intervention1, intervention2
     else:
-        if step < 10:
-            intervention_type = 'last_action'
-            print('Intervention type changed to last_action in step 1')
-        
-        print(f'Intervention type: {intervention_type}')
+        # if step < 15:
+        #     intervention_type = 'last_action'
+        # print(f'Intervention type: {intervention_type}')
+
         own_frequency1 = frequence_number_to_index(C_ratio_list[index1, 0])
         own_frequency2 = frequence_number_to_index(C_ratio_list[index2, 0])
 
@@ -116,15 +120,24 @@ def create_prompt(intervention_type, g, C_ratio_list, observation_list, index1, 
     return prompt_1, prompt_2, intervention1, intervention2
 
 def get_LLM_response(llm_agent_list, prompt_1, prompt_2):
-    action_1_str = llm_agent_list[index1].answer(prompt_1)
-    action_2_str = llm_agent_list[index2].answer(prompt_2)
+    def deterministic_action():
+        return np.random.choice(["C", "D"], p=[1, 0])
+
+    if index1 in DETERMINISTIC_AGENT_IDS:
+        action_1_str = deterministic_action()
+    else:
+        action_1_str = llm_agent_list[index1].answer(prompt_1)
+
+    if index2 in DETERMINISTIC_AGENT_IDS:
+        action_2_str = deterministic_action()
+    else:
+        action_2_str = llm_agent_list[index2].answer(prompt_2)
 
     return action_1_str, action_2_str
 
+
 def save_everything(whole_agent_ratio_list_record, whole_observation_list_record, whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec):
-    dir = f'outputs/{intervention_type}/smaller_LA/'
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    dir = f'outputs_deterministic_agents/{intervention_type}'
     np.save(f'{os.path.join(dir, f"agent_ratio_matrix_{run_spec}")}', np.array(whole_agent_ratio_list_record))
     np.save(f'{os.path.join(dir, f"agent_last_action_matrix_{run_spec}")}', np.array(whole_observation_list_record))
     np.save(f'{os.path.join(dir, f"agent_intervention_matrix_{run_spec}")}', np.array(whole_intervention_list_record))
@@ -149,7 +162,7 @@ def update_pair_actions(pair_actions, action1, action2):
     return pair_actions
 
 def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total_pair_actions, rounds_total_C_ratio_per_step, intervention_type, run_spec):
-    dir = f'outputs/{intervention_type}/smaller_LA/round_wise_data_2025'
+    dir = f'outputs_deterministic_agents/{intervention_type}/round_wise_data'
     if not os.path.exists(dir):
         os.makedirs(dir)
     np.save(f'{os.path.join(dir, f"rounds_total_reward_{run_spec}")}', np.array(rounds_total_reward))
@@ -158,14 +171,14 @@ def save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total
     np.save(f'{os.path.join(dir, f"rounds_total_C_ratio_per_step_{run_spec}")}', np.array(rounds_total_C_ratio_per_step))
 
 # set parameters
-num_agent = 4
-steps = 25
-rounds = 4
+num_agent = 5
+steps = 10
+rounds = 2
 edge_prob = 1
 
 run_spec = f'{num_agent}_{steps}_{rounds}_{edge_prob}'
 intervention_types = ['RL', 'last_action', 'agent_ratio', 'network_ratio', 'randomized']
-intervention_type = 'RL'
+intervention_type = 'network_ratio'
 
 # Load settings
 prompts_file = json.load(open('settings/prompts.json'))
@@ -209,7 +222,9 @@ rounds_total_reward = []
 rounds_total_C_ratio = []
 rounds_total_pair_actions = []
 rounds_total_C_ratio_per_step = []
+
 print("Starting the simulation...")
+
 for episode in range(rounds):
 
     # creating the network
@@ -259,12 +274,6 @@ for episode in range(rounds):
             intervention_list[index1, index2] = [intervention1, intervention2]
             intervention_list[index2, index1] = [intervention2, intervention1]
 
-        # if flag == False:
-        #     print('---')
-        #     print(f'Round:{episode}, Step:{step}, Prompt: {prompt_1}')
-        #     print('---')
-        #     flag = True
-
         # updating matrixes for each step
         round_agent_ratio_list_record.append(C_ratio_list)
         round_observation_list_record.append(observation_list)
@@ -280,23 +289,23 @@ for episode in range(rounds):
         total_C_ratio_list_per_step.append(total_C_ratio_per_step)
         
         # save every step data
-        # with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
-        #     f.write(f'Round:{episode}, Step:{step}, Step rewards: {step_reward}\n')
-        #     f.write(f'Round:{episode}, Step:{step}, Total C ratio:{total_C_ratio}\n')
-        #     f.write(f'Round:{episode}, Step:{step}, Pair actions: {pair_actions}\n')
-        #     f.write(f'Round:{episode}, Step:{step}, C ratio per step: {total_C_ratio_per_step}\n')
+        with open(f'outputs_deterministic_agents/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
+            f.write(f'Round:{episode}, Step:{step}, Step rewards: {step_reward}\n')
+            f.write(f'Round:{episode}, Step:{step}, Total C ratio:{total_C_ratio}\n')
+            f.write(f'Round:{episode}, Step:{step}, Pair actions: {pair_actions}\n')
+            f.write(f'Round:{episode}, Step:{step}, C ratio per step: {total_C_ratio_per_step}\n')
 
     rounds_total_reward.append(step_rewards)
     rounds_total_C_ratio.append(total_C_ratios)
     rounds_total_pair_actions.append(total_pair_actions)
     rounds_total_C_ratio_per_step.append(total_C_ratio_list_per_step)
 
-    # with open(f'outputs/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
-    #     f.write(f'Round:{episode}, Step rewards: {step_rewards}\n')
-    #     f.write(f'Round:{episode}, Total C ratio:{total_C_ratios}\n')
-    #     f.write(f'Round:{episode}, Pair actions: {total_pair_actions}\n')
-    #     f.write(f'Round:{episode}, C ratio per step: {total_C_ratio_list_per_step}\n')
-    #     f.write('------------------------------------\n')
+    with open(f'outputs_deterministic_agents/{intervention_type}/rewards_{run_spec}.txt', 'a') as f:
+        f.write(f'Round:{episode}, Step rewards: {step_rewards}\n')
+        f.write(f'Round:{episode}, Total C ratio:{total_C_ratios}\n')
+        f.write(f'Round:{episode}, Pair actions: {total_pair_actions}\n')
+        f.write(f'Round:{episode}, C ratio per step: {total_C_ratio_list_per_step}\n')
+        f.write('------------------------------------\n')
 
     print(f'Round:{episode}, Step rewards: {step_rewards}')
 
@@ -309,6 +318,7 @@ for episode in range(rounds):
     print(f'Duration: {round(time.time() - initial_time, 2)}, Round:{episode}, '
           f'C ratio: {total_C_ratio}')
 
-save_everything(whole_agent_ratio_list_record, whole_observation_list_record, whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec)
+save_everything(whole_agent_ratio_list_record, whole_observation_list_record,
+                whole_intervention_list_record, whole_adjacency_matrix_record, intervention_type, run_spec)
 
 save_round_wise_data(rounds_total_reward, rounds_total_C_ratio, rounds_total_pair_actions, rounds_total_C_ratio_per_step, intervention_type, run_spec)
