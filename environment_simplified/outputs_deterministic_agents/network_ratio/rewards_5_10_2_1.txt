@@ -79,3 +79,12 @@ Round:1, Step:8, Step rewards: 42
 Round:1, Step:8, Total C ratio:0.41
 Round:1, Step:8, Pair actions: {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}
 Round:1, Step:8, C ratio per step: 0.4
+Round:1, Step:9, Step rewards: 42
+Round:1, Step:9, Total C ratio:0.41
+Round:1, Step:9, Pair actions: {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}
+Round:1, Step:9, C ratio per step: 0.4
+Round:1, Step rewards: [42, 45, 42, 42, 45, 42, 42, 42, 42, 42]
+Round:1, Total C ratio:[0.4, 0.42, 0.42, 0.41, 0.42, 0.42, 0.41, 0.41, 0.41, 0.41]
+Round:1, Pair actions: [{'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}, {'CC': 1, 'CD': 3, 'DC': 4, 'DD': 2}, {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}, {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}, {'CC': 1, 'CD': 4, 'DC': 3, 'DD': 2}, {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}, {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}, {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}, {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}, {'CC': 1, 'CD': 3, 'DC': 3, 'DD': 3}]
+Round:1, C ratio per step: [0.4, 0.45, 0.4, 0.4, 0.45, 0.4, 0.4, 0.4, 0.4, 0.4]
+------------------------------------
