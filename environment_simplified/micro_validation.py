@@ -38,7 +38,7 @@ all_actions1 = []
 # freq2 = 'sometimes'
 # print(f'Agent 1: {freq1}, Agent 2: {freq2}')
 print(f'Model {model_name} starting...')
-all_keys = ['template_no_history']
+all_keys = ['test1', 'test2', 'test3', 'test4']
 prompt_list = [prompts_file[key] for key in all_keys]
 for i, prompt_1 in enumerate(prompt_list):
     all_actions1 = []

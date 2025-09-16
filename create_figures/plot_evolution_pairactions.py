@@ -5,8 +5,8 @@ import os
 from scipy.interpolate import interp1d
 
 game_type = 'last_action'
-C_ratio = np.load(f'outputs/{game_type}/round_wise_data_2025/rounds_total_C_ratio_per_step_20_20_10_0.25.npy')
-pair_actions = np.load(f'outputs/{game_type}/round_wise_data_2025/rounds_total_pair_actions_20_20_10_0.25.npy', allow_pickle=True)
+C_ratio = np.load(f'outputs/{game_type}/round_wise_data/rounds_total_C_ratio_per_step_20_20_10_0.25.npy')
+pair_actions = np.load(f'outputs/{game_type}/round_wise_data/rounds_total_pair_actions_20_20_10_0.25.npy', allow_pickle=True)
 
 # # rerun the 8th round for removing the outlier
 # C_ratio = pd.read_csv('NR_C_ratio-modified.csv')
