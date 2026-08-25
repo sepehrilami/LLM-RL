@@ -1,0 +1,7 @@
+{
+    "provider": "groq",
+    "model": "llama3-70b-8192",
+    "temperature": 0.8,
+    "api_key": "REPLACE_WITH_YOUR_GROQ_API_KEY",
+    "memory_length": 0
+}

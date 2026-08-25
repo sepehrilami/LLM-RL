@@ -106,19 +106,25 @@ pip install -r requirements.txt
 
 Reference environment: Python 3.11, PyTorch 2.3.1, NetworkX 3.3, LangChain 0.2.5. Training and evaluation for the paper were run on Northeastern University's high-performance cluster.
 
-**Provide your own API credentials.** `agent.py` reads the model and key from `settings/env_settings.json`:
+**Provide your own API credentials.** `agent.py` reads the model and key from `settings/env_settings.json`, which is deliberately not tracked. Copy the template and fill in your key:
+
+```bash
+cp settings/env_settings.example.json settings/env_settings.json
+```
 
 ```json
 {
     "provider": "groq",
     "model": "llama3-70b-8192",
     "temperature": 0.8,
-    "api_key": "YOUR_GROQ_API_KEY",
+    "api_key": "REPLACE_WITH_YOUR_GROQ_API_KEY",
     "memory_length": 0
 }
 ```
 
-Set `"provider": "ollama"` with `"api_key": null` to run a local model instead, or `"provider": "hf"` with a HuggingFace token for a local quantized checkpoint. Keep this file out of version control — add `settings/env_settings.json` to `.gitignore` before committing.
+Set `"provider": "ollama"` with `"api_key": null` to run a local model instead, or `"provider": "hf"` with a HuggingFace token for a local quantized checkpoint. The `environment_built_new/` scaffolding uses `settings/orbit_settings.json` with the same pattern and its own `.example.json` template.
+
+`.gitignore` already excludes `**/settings/env_settings.json`, `**/settings/orbit_settings.json`, and `**/settings/api`, so a filled-in config will not be committed by accident. Never put a live key in a notebook cell.
 
 ## Reproducing the experiments
 
